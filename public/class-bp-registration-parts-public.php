@@ -100,4 +100,28 @@ class Bp_Registration_Parts_Public {
 
 	}
 
+	/**
+	 * Displays a part of the registration
+	 * 
+	 * @todo 	Allow users to change the page instead of hard coding the slug
+	 * @since 	1.0.0
+	 */
+	public function display_part() {
+		
+		if ( basename( get_permalink( ) ) == 'post-reg-setup' ) {
+		
+			if ( in_the_loop() ) {
+				
+
+				$template_loader = new BP_Registration_Parts_Template_Loader;
+				
+				$data = array( 'group_id' => 8 );
+				$template_loader->set_template_data( $data );
+				$template_loader->get_template_part('part-template');
+		
+			}		
+		
+		}
+	
+	}
 }

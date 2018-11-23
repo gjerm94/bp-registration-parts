@@ -122,6 +122,8 @@ class Bp_Registration_Parts {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-bp-registration-parts-public.php';
 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-bp-registration-parts-template-loader.php';	
+
 		$this->loader = new Bp_Registration_Parts_Loader();
 
 	}
@@ -142,7 +144,7 @@ class Bp_Registration_Parts {
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
 	}
-
+	
 	/**
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
@@ -172,7 +174,8 @@ class Bp_Registration_Parts {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
+		
+		$this->loader->add_action( 'the_content', $plugin_public, 'display_part' );
 	}
 
 	/**
