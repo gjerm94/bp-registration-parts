@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -11,16 +12,24 @@
  */
 ?>
 
-<?php echo $data->group_id;
-do_action( 'bp_before_profile_edit_content' );
+<?php
+require_once plugin_dir_path(dirname(__FILE__)) . 'templates/edit.php';
 
-if ( bp_has_profile( 'profile_group_id=' . $data->group_id ) ) :
+//echo $data;
+do_action( 'bp_before_profile_edit_content' );
+//var_dump(bp_the_profile_group_edit_form_action());
+if ( bp_has_profile( 'profile_group_id=' . $current_group_id  ) ) :
 	while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
 
-<form action="<?php bp_the_profile_group_edit_form_action(); ?>" method="post" id="profile-edit-form" class="standard-form <?php bp_the_profile_group_slug(); ?>">
+<form action="<?php echo $form_action; ?>" method="post" id="profile-edit-form" class="standard-form <?php bp_the_profile_group_slug(); ?>">
+<script>
+//console.log(document.forms.namedItem("profile-edit-form"));
+//function changeAction() {
 
+//document.forms.namedItem("profile-edit-form").action = "";
+//}
+</script>
 	<?php
-
 		/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
 		do_action( 'bp_before_profile_field_content' ); ?>
 
@@ -105,11 +114,16 @@ if ( bp_has_profile( 'profile_group_id=' . $data->group_id ) ) :
 	do_action( 'bp_after_profile_field_content' ); ?>
 
 	<div class="submit">
-		<input type="submit" name="profile-group-edit-submit" id="profile-group-edit-submit" value="<?php esc_attr_e( 'Save Changes', 'buddypress' ); ?> " />
+		<input type="submit" name="profile-group-edit-submit" id="profile-group-edit-submit" value="<?php esc_attr_e( 'Next step', 'bp-registration-parts' ); ?> " />
+		
+		<?php if ( $current_group_id != $group_ids[0]) : ?>
+			<input type="submit" name="profile-group-edit-prev" id="profile-group-edit-prev" value="<?php esc_attr_e( 'Previous step', 'bp-registration-parts' ); ?> " />	
+		<?php endif; ?> 
+		
 	</div>
 
 	<input type="hidden" name="field_ids" id="field_ids" value="<?php bp_the_profile_field_ids(); ?>" />
-
+	<input type="hidden" name="current_group_id" id="current_group_id" value="<?php echo $current_group_id; ?>" />
 	<?php wp_nonce_field( 'bp_xprofile_edit' ); ?>
 
 </form>

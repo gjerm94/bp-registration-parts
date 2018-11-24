@@ -106,22 +106,80 @@ class Bp_Registration_Parts_Public {
 	 * @todo 	Allow users to change the page instead of hard coding the slug
 	 * @since 	1.0.0
 	 */
-	public function display_part() {
-		
-		if ( basename( get_permalink( ) ) == 'post-reg-setup' ) {
-		
-			if ( in_the_loop() ) {
-				
+	public function display_part($content) {
 
-				$template_loader = new BP_Registration_Parts_Template_Loader;
+		$page_slug = 'post-reg-setup';
+		if ( basename( get_permalink( ) ) == $page_slug ) {
+			if ( in_the_loop() ) {
+			 
+			$group_ids = $this->get_profile_group_ids();
+				sort($group_ids);
+			//var_dump($group_ids);	
+		// global $_POST;	
+	//var_dump($_POST['field_ids']);	
+	$form_action = "";		
+		if (isset($_POST['current_group_id'])) {
+				//echo "rrrr";
+				$current_group_id = $_POST['current_group_id'];
+				$index = array_search($current_group_id, $group_ids);
 				
-				$data = array( 'group_id' => 8 );
+				if ( isset( $_POST['profile-group-edit-prev'])) {
+					$current_group_id = $group_ids[$index - 1];
+				} else {
+					if ( $group_ids[$index] != end($group_ids)) {
+						$current_group_id = $group_ids[$index + 1];
+					} else {
+						$form_action = bp_loggedin_user_domain();
+					}
+				}
+			} else {
+				$current_group_id = $group_ids[0];
+			}
+			
+		//	$form_action = trailingslashit( $page_slug );
+			/**var_dump( $_POST['field_ids']);
+				$template_loader = new BP_Registration_Parts_Template_Loader;
+				$form_action = trailingslashit( $page_slug );
+				$data = array( 
+					'group_id' 		=> 8, 
+					'form_action' 	=> $form_action
+				);
+				
 				$template_loader->set_template_data( $data );
+				
 				$template_loader->get_template_part('part-template');
-		
+				*/
+				require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';
 			}		
 		
 		}
 	
+		return $content;
+	
 	}
+
+	/**
+	 * Retrieves IDs of all xprofile field groups
+	 * 
+	 * @since 	1.0.0
+	 * @return  array 	The IDs
+	 */
+	public function get_profile_group_ids() {
+		
+		$group_ids = [];
+		
+		if ( bp_has_profile( ) ) {
+			while ( bp_profile_groups() ) : bp_the_profile_group();
+			$group_ids[] = bp_get_the_profile_group_id();
+			endwhile;
+		}
+		
+		return $group_ids;
+	}
+
+	function carFormSubmit() {
+    var_dump($_POST); //$_POST variables should be accessible now
+
+    //Optional: Now you can redirect the user to your confirmation page using wp_redirect()
+}
 }
