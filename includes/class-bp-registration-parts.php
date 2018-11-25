@@ -176,10 +176,6 @@ class Bp_Registration_Parts {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		
 		$this->loader->add_filter( 'the_content', $plugin_public, 'display_part' );
-		//$this->loader->add_filter( 'xprofile_template_edit_profile', $plugin_public, 'display_part');
-		//$this->loader->add_action( 'xprofile_screen_edit_profile', $plugin_public, 'redirect_part' );	
-		//$this->loader->add_action('admin_post_nopriv_car_form', $plugin_public, 'carFormSubmit');
-		//$this->loader->add_action('admin_post_car_form', $plugin_public, 'carFormSubmit');
 	}
 
 	/**

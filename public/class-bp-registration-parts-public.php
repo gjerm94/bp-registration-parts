@@ -113,44 +113,31 @@ class Bp_Registration_Parts_Public {
 			if ( in_the_loop() ) {
 			 
 			$group_ids = $this->get_profile_group_ids();
-				sort($group_ids);
-			//var_dump($group_ids);	
-		// global $_POST;	
-	//var_dump($_POST['field_ids']);	
-	$form_action = "";		
+			$form_action = "";		
 		if (isset($_POST['current_group_id'])) {
-				//echo "rrrr";
-				$current_group_id = $_POST['current_group_id'];
-				$index = array_search($current_group_id, $group_ids);
-				
-				if ( isset( $_POST['profile-group-edit-prev'])) {
-					$current_group_id = $group_ids[$index - 1];
+			$current_group_id = $_POST['current_group_id'];
+			$index = array_search($current_group_id, $group_ids);
+			$redirect_after_save = false;
+			if ( isset( $_POST['profile-group-edit-prev'])) {
+				//Previous button is clicked, go back to previous group ID
+				$index--;
+				$current_group_id = $group_ids[$index];
+			} elseif (isset ( $_POST['profile-group-edit-submit'])) {
+				$index++;
+				$current_group_id = $group_ids[$index];
+				if ( $group_ids[$index] ) {
+					$current_group_id = $group_ids[$index];
 				} else {
-					if ( $group_ids[$index] != end($group_ids)) {
-						$current_group_id = $group_ids[$index + 1];
-					} else {
-						$form_action = bp_loggedin_user_domain();
-					}
+					$redirect_after_save = true;
+					$redirect_url = bp_loggedin_user_domain();
 				}
-			} else {
-				$current_group_id = $group_ids[0];
+					
 			}
-			
-		//	$form_action = trailingslashit( $page_slug );
-			/**var_dump( $_POST['field_ids']);
-				$template_loader = new BP_Registration_Parts_Template_Loader;
-				$form_action = trailingslashit( $page_slug );
-				$data = array( 
-					'group_id' 		=> 8, 
-					'form_action' 	=> $form_action
-				);
-				
-				$template_loader->set_template_data( $data );
-				
-				$template_loader->get_template_part('part-template');
-				*/
-				require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';
-			}		
+		} else {
+			$current_group_id = $group_ids[0];
+		}
+			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';
+		}		
 		
 		}
 	
@@ -160,6 +147,7 @@ class Bp_Registration_Parts_Public {
 
 	/**
 	 * Retrieves IDs of all xprofile field groups
+	 * IDs are sorted by group order in ascending order
 	 * 
 	 * @since 	1.0.0
 	 * @return  array 	The IDs
@@ -167,19 +155,24 @@ class Bp_Registration_Parts_Public {
 	public function get_profile_group_ids() {
 		
 		$group_ids = [];
+
+		$args = apply_filters( 'bprp_xprofile_groups_args', $args );
 		
-		if ( bp_has_profile( ) ) {
-			while ( bp_profile_groups() ) : bp_the_profile_group();
-			$group_ids[] = bp_get_the_profile_group_id();
-			endwhile;
+		$groups = bp_xprofile_get_groups( $args );
+		
+		usort( $groups, array( $this, 'sort_group_by_order' ));	
+		
+		foreach ( $groups as $group ) {
+				$group_ids[] = $group->id;
 		}
-		
+
 		return $group_ids;
 	}
 
-	function carFormSubmit() {
-    var_dump($_POST); //$_POST variables should be accessible now
-
-    //Optional: Now you can redirect the user to your confirmation page using wp_redirect()
-}
+	/**
+	 * Used with usort to sort field groups by group order in ascending order
+	 */
+	public function sort_group_by_order($grp1, $grp2) {
+		return $grp1->group_order > $grp2->group_order;
+	}
 }
