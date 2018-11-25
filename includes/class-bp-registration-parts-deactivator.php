@@ -23,14 +23,20 @@
 class Bp_Registration_Parts_Deactivator {
 
 	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
+	 * Removes user meta added by the plugin
 	 *
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+		
+		global $wpdb;
+		
+		$users = get_users();
+		 
+		foreach ( $users as $user ) {
+			delete_user_meta( $user->id, '_bprp_completed' ); 
+		}
+	
 	}
 
 }

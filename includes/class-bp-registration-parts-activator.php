@@ -23,14 +23,20 @@
 class Bp_Registration_Parts_Activator {
 
 	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
+	 * Sets bprp_completed to true for all registered users
 	 *
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-
+		
+		global $wpdb;
+		
+		$users = get_users();
+		 
+		foreach ( $users as $user ) {
+			add_user_meta( $user->id, '_bprp_completed', true ); 
+		}
+	
 	}
 
 }
