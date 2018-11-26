@@ -196,4 +196,38 @@ class Bp_Registration_Parts_Public {
 		return false;
 	}
 
+	/**
+	 * Displays the group nav at the top of the part template
+	 * 
+	 * "Nav" is kind of misleading here because we are not adding any links
+	 * just the name of the group and the step #.
+	 * 
+	 * @since 	1.0.0
+	 */
+	public function display_field_groups_nav($group_ids, $current_group_id) {
+		//$bp = buddypress();
+		for ( $i = 0, $count = count($group_ids); $i < $count; ++$i ) {
+			$group = new BP_XProfile_Group($id = $group_ids[$i]);
+			// Setup the selected class.
+			$selected = '';
+			
+			if ( $current_group_id === $group->id ) {
+				$selected = ' class="current"';
+			}
+
+			$step = sprintf( __( 'Step %s: ', 'bp-registration-parts' ), $i + 1);
+			
+			
+			//Add tab to end of tabs array.
+		$tabs[] = sprintf(
+			'<li %1$s>%2$s%3$s</li>',
+			$selected,
+			esc_html( $step ),
+			esc_html( apply_filters( 'bprp_get_the_profile_group_name', $group->name ) )
+		);
+		
+		
+		}
+		echo join( '', $tabs );
+	}
 }
