@@ -109,6 +109,8 @@ class Bp_Registration_Parts_Public {
 	public function display_part($content) {
 
 		$page_slug = 'post-reg-setup';
+		$step_counter = 0;
+
 		if ( basename( get_permalink( ) ) == $page_slug ) {
 			if ( in_the_loop() ) {
 			 
@@ -116,17 +118,17 @@ class Bp_Registration_Parts_Public {
 			$form_action = "";		
 		if (isset($_POST['current_group_id'])) {
 			$current_group_id = $_POST['current_group_id'];
-			$index = array_search($current_group_id, $group_ids);
+			$step_counter = array_search($current_group_id, $group_ids);
 			$redirect_after_save = false;
 			if ( isset( $_POST['profile-group-edit-prev'])) {
 				//Previous button is clicked, go back to previous group ID
-				$index--;
-				$current_group_id = $group_ids[$index];
+				$step_counter--;
+				$current_group_id = $group_ids[$step_counter];
 			} elseif (isset ( $_POST['profile-group-edit-submit'])) {
-				$index++;
-				$current_group_id = $group_ids[$index];
-				if ( $group_ids[$index] ) {
-					$current_group_id = $group_ids[$index];
+				$step_counter++;
+				$current_group_id = $group_ids[$step_counter];
+				if ( $group_ids[$step_counter] ) {
+					$current_group_id = $group_ids[$step_counter];
 				} else {
 					$redirect_after_save = true;
 					$redirect_url = bp_loggedin_user_domain();
@@ -142,7 +144,6 @@ class Bp_Registration_Parts_Public {
 		}
 	
 		return $content;
-	
 	}
 
 	/**
@@ -175,4 +176,24 @@ class Bp_Registration_Parts_Public {
 	public function sort_group_by_order($grp1, $grp2) {
 		return $grp1->group_order > $grp2->group_order;
 	}
+
+	/**
+	 * Check if last step of registration
+	 */
+	public function is_first_step($group_ids, $current_group_id) {
+		return $current_group_id == $group_ids[0];
+	}
+
+	/**
+	 * Check if first step of registration
+	 */
+	public function is_last_step($group_ids, $current_step) {
+		
+		if ( $group_ids[$current_step] == end( $group_ids ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
 }

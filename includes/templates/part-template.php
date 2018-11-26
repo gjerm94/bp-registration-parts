@@ -113,11 +113,19 @@ if ( bp_has_profile( 'profile_group_id=' . $current_group_id  ) ) :
 		do_action( 'bp_after_profile_field_content' ); ?>
 
 		<div class="submit">
-			<?php if ( $current_group_id != $group_ids[0]) : ?>
-				<input type="submit" name="profile-group-edit-prev" id="profile-group-edit-prev" value="<?php esc_attr_e( 'Previous step', 'bp-registration-parts' ); ?> " />	
+		
+			<?php if ( !$this->is_first_step($group_ids, $current_group_id) ) : ?>
+				<input type="submit" name="profile-group-edit-prev" id="profile-group-edit-prev" value="<?php esc_attr_e( '❮ Previous step', 'bp-registration-parts' ); ?> " />	
 			<?php endif; ?> 
-			
-			<input type="submit" name="profile-group-edit-submit" id="profile-group-edit-submit" value="<?php esc_attr_e( 'Next step', 'bp-registration-parts' ); ?> " />
+		
+			<?php 
+			$text = 'Next step ❯';
+			if ( $this->is_last_step($group_ids, $step_counter)) {
+				$text = 'Save & submit';
+			}
+			?>
+
+			<input type="submit" name="profile-group-edit-submit" id="profile-group-edit-submit" value="<?php esc_attr_e( $text, 'bp-registration-parts' ); ?> " />
 			
 		
 		</div>

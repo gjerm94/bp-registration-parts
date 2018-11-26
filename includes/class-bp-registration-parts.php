@@ -78,6 +78,7 @@ class Bp_Registration_Parts {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_core_hooks();
 
 	}
 
@@ -179,6 +180,15 @@ class Bp_Registration_Parts {
 	}
 
 	/**
+	 * Register all of the hooks not specifically related to the 
+	 * core functionality of the plugin
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_core_hooks() {
+		$this->loader->add_action( 'user_register', $this, 'add_bprp_completed_meta' );
+	}
+	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
 	 * @since    1.0.0
@@ -216,6 +226,18 @@ class Bp_Registration_Parts {
 	 */
 	public function get_version() {
 		return $this->version;
+	}
+
+	/**
+	 * Registers bprp_completed meta for user.
+	 * 
+	 * This meta field is used to determine if a user has completed the registration steps.
+	 * 
+	 * @since 	1.0.0
+	 */
+	public function add_bprp_completed_meta( $user_id ) {
+		//TODO: test this
+		add_user_meta( $user_id, '_bprp_completed', false ); 
 	}
 
 }
