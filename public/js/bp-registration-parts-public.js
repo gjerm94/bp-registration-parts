@@ -8,7 +8,10 @@
 		$("#profile-group-edit-prev").click(function() {
 			$( '#profile-edit-form' ).attr('action', '');
 		});
-	
+		
+		if ( $('#profile-edit-form').length && $('.page-breadcrumbs').length) {
+			$('.page-breadcrumbs').hide();
+		}
 	});
 
 })( jQuery );

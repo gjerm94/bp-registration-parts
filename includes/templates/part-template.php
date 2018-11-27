@@ -22,6 +22,7 @@ if ( $redirect_after_save ) {
 
 do_action( 'bp_before_profile_edit_content' ); ?>
 
+<div id ="buddypress">
 <div id="bprp-profile-group">
 
 <?php
@@ -45,7 +46,8 @@ if ( bp_has_profile( 'profile_group_id=' . $current_group_id  ) ) :
 				/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
 				do_action( 'bp_before_profile_field_content' ); ?>
 
-				<h2><?php printf( __( "Editing '%s' Profile Group", 'buddypress' ), bp_get_the_profile_group_name() ); ?></h2>
+				<h2><?php printf( __( 'Step %s: %s', 'bp-registration-parts' ), $step_counter + 1, bp_get_the_profile_group_name()); ?></h2>
+
 
 				
 
@@ -126,9 +128,9 @@ if ( bp_has_profile( 'profile_group_id=' . $current_group_id  ) ) :
 				<?php endif; ?> 
 			
 				<?php 
-				$text = 'Next step ❯';
+				$text = __('Next step ❯', 'bp-registration-parts');
 				if ( $this->is_last_step($group_ids, $step_counter)) {
-					$text = 'Save & submit';
+					$text = __('Save & submit', 'bp-registration-parts');
 				}
 				?>
 
@@ -145,6 +147,7 @@ if ( bp_has_profile( 'profile_group_id=' . $current_group_id  ) ) :
 	
 <?php endwhile; endif; ?>
 </div> <!-- #bprp-profile-group -->
+			</div> <!-- #buddypress -->
 <?php
 
 /**
