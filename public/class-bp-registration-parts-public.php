@@ -220,7 +220,7 @@ class Bp_Registration_Parts_Public {
 			
 			//Add tab to end of tabs array.
 		$tabs[] = sprintf(
-			'<li %1$s>%2$s%3$s</li>',
+			'<li %1$s><span class="registration-step">%2$s</span><span class="profile-group-name">%3$s</span></li>',
 			$selected,
 			esc_html( $step ),
 			esc_html( apply_filters( 'bprp_get_the_profile_group_name', $group->name ) )
