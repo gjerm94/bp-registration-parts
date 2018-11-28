@@ -58,6 +58,15 @@ class Bp_Registration_Parts {
 	protected $version;
 
 	/**
+	 * Slug of the page used to display the parts template.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string    $pars_page    The page slug.
+	 */	
+	protected $parts_slug;
+
+	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -73,6 +82,7 @@ class Bp_Registration_Parts {
 			$this->version = '1.0.0';
 		}
 		$this->plugin_name = 'bp-registration-parts';
+		$this->parts_slug = 'post-reg-setup';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -186,7 +196,10 @@ class Bp_Registration_Parts {
 	 * @access   private
 	 */
 	private function define_core_hooks() {
+
 		$this->loader->add_action( 'user_register', $this, 'add_bprp_completed_meta' );
+		$this->loader->add_action( 'template_redirect', $this, 'redirect_to_part_page' );
+
 	}
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
@@ -238,6 +251,37 @@ class Bp_Registration_Parts {
 	public function add_bprp_completed_meta( $user_id ) {
 		//TODO: test this
 		add_user_meta( $user_id, '_bprp_completed', false ); 
+	}
+
+	/**
+	 * Redirects to the registration parts page if current user has not completed registration
+	 * 
+	 * @since 	1.0.0
+	 */
+	public function redirect_to_part_page( ) {
+	
+		if (is_user_logged_in()) {
+			
+			$user_id = wp_get_current_user()->ID;
+			$completed = get_user_meta( $user_id, '_bprp_completed', true);
+			
+			if ( ! $completed ) {
+				
+				if ( home_url( $_SERVER['REQUEST_URI'] ) != home_url( $this->parts_slug ) ) {
+					
+					wp_redirect( home_url( $this->parts_slug ) );	
+					exit;
+				
+				}
+			
+			}
+		
+		}
+	
+	}
+
+	public function is_parts_page() {
+		return home_url( $_SERVER['REQUEST_URI'] ) === home_url( $this->parts_slug ); 
 	}
 
 }

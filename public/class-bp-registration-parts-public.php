@@ -106,44 +106,62 @@ class Bp_Registration_Parts_Public {
 	 * @todo 	Allow users to change the page instead of hard coding the slug
 	 * @since 	1.0.0
 	 */
-	public function display_part($content) {
+	public function display_part( $content ) {
 
 		$page_slug = 'post-reg-setup';
 		$step_counter = 0;
 
 		if ( basename( get_permalink( ) ) == $page_slug ) {
+
 			if ( in_the_loop() ) {
 			 
-			$group_ids = $this->get_profile_group_ids();
-			$form_action = "";		
-		if (isset($_POST['current_group_id'])) {
-			$current_group_id = $_POST['current_group_id'];
-			$step_counter = array_search($current_group_id, $group_ids);
-			$redirect_after_save = false;
-			if ( isset( $_POST['profile-group-edit-prev'])) {
-				//Previous button is clicked, go back to previous group ID
-				$step_counter--;
-				$current_group_id = $group_ids[$step_counter];
-			} elseif (isset ( $_POST['profile-group-edit-submit'])) {
-				$step_counter++;
-				$current_group_id = $group_ids[$step_counter];
-				if ( $group_ids[$step_counter] ) {
-					$current_group_id = $group_ids[$step_counter];
-				} else {
-					$redirect_after_save = true;
-					$redirect_url = bp_loggedin_user_domain();
-				}
+				$group_ids = $this->get_profile_group_ids();
+				$form_action = "";
+
+				if (isset($_POST['current_group_id'])) {
 					
-			}
-		} else {
-			$current_group_id = $group_ids[0];
-		}
-			require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';
-		}		
+					$current_group_id = $_POST['current_group_id'];
+					$step_counter = array_search($current_group_id, $group_ids);
+					$redirect_after_save = false;
+
+					if ( isset( $_POST['profile-group-edit-prev'])) {
+						
+						//Previous button is clicked, go back to previous group ID
+						$step_counter--;
+						$current_group_id = $group_ids[$step_counter];
+
+					} elseif (isset ( $_POST['profile-group-edit-submit'])) {
+
+						$step_counter++;
+						$current_group_id = $group_ids[$step_counter];
+
+						if ( $group_ids[$step_counter] ) {
+
+							$current_group_id = $group_ids[$step_counter];
+
+						} else {
+							
+							// All steps completed
+							// Update the meta value and redirect to profile
+							update_user_meta( get_current_user_id(), '_bprp_completed', true);
+							$redirect_after_save = true;
+							$redirect_url = bp_loggedin_user_domain();
+
+						}
+							
+					}
+				} else {
+
+					$current_group_id = $group_ids[0];
+				}
+
+				require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';
+			}		
 		
 		}
 	
 		return $content;
+
 	}
 
 	/**
@@ -173,21 +191,21 @@ class Bp_Registration_Parts_Public {
 	/**
 	 * Used with usort to sort field groups by group order in ascending order
 	 */
-	public function sort_group_by_order($grp1, $grp2) {
+	public function sort_group_by_order( $grp1, $grp2 ) {
 		return $grp1->group_order > $grp2->group_order;
 	}
 
 	/**
 	 * Check if last step of registration
 	 */
-	public function is_first_step($group_ids, $current_group_id) {
+	public function is_first_step( $group_ids, $current_group_id ) {
 		return $current_group_id == $group_ids[0];
 	}
 
 	/**
 	 * Check if first step of registration
 	 */
-	public function is_last_step($group_ids, $current_step) {
+	public function is_last_step( $group_ids, $current_step ) {
 		
 		if ( $group_ids[$current_step] == end( $group_ids ) ) {
 			return true;
@@ -204,9 +222,9 @@ class Bp_Registration_Parts_Public {
 	 * 
 	 * @since 	1.0.0
 	 */
-	public function display_field_groups_nav($group_ids, $current_group_id) {
-		//$bp = buddypress();
+	public function display_field_groups_nav( $group_ids, $current_group_id ) {
 		for ( $i = 0, $count = count($group_ids); $i < $count; ++$i ) {
+			
 			$group = new BP_XProfile_Group($id = $group_ids[$i]);
 			// Setup the selected class.
 			$selected = '';
@@ -217,17 +235,18 @@ class Bp_Registration_Parts_Public {
 
 			$step = sprintf( __( 'Step %s: ', 'bp-registration-parts' ), $i + 1);
 			
-			
 			//Add tab to end of tabs array.
-		$tabs[] = sprintf(
-			'<li %1$s><span class="registration-step">%2$s</span><span class="profile-group-name">%3$s</span></li>',
-			$selected,
-			esc_html( $step ),
-			esc_html( apply_filters( 'bprp_get_the_profile_group_name', $group->name ) )
-		);
-		
+			$tabs[] = sprintf(
+				'<li %1$s><span class="registration-step">%2$s</span><span class="profile-group-name">%3$s</span></li>',
+				$selected,
+				esc_html( $step ),
+				esc_html( apply_filters( 'bprp_get_the_profile_group_name', $group->name ) )
+			);
 		
 		}
+
 		echo join( '', $tabs );
+
 	}
+
 }

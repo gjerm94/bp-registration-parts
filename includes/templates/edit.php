@@ -35,10 +35,10 @@ function xprofile_screen_edit_profile() {
 
 	// No errors.
 	$errors = false;
-//echo "eee";
+
 	// Check to see if any new information has been submitted.
 	if ( isset( $_POST['field_ids'] ) ) {
-//echo "it is set";
+
 		$user_id = get_current_user_id();
 		// Check the nonce.
 		check_admin_referer( 'bp_xprofile_edit' );
@@ -112,7 +112,7 @@ function xprofile_screen_edit_profile() {
 					 * @param int    $field_id ID of the field that was saved.
 					 * @param string $value    Value that was saved to the field.
 					 */
-					//do_action( 'xprofile_profile_field_data_updated', $field_id, $value );
+					do_action( 'xprofile_profile_field_data_updated', $field_id, $value );
 				}
 			}
 

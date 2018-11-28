@@ -26,7 +26,7 @@ do_action( 'bp_before_profile_edit_content' ); ?>
 <div id="bprp-profile-group">
 
 <?php
-if ( bp_has_profile( 'profile_group_id=' . $current_group_id  ) ) :
+if ( bp_has_profile( 'user_id=' . wp_get_current_user()->ID . '&fetch_field_data=true&hide_empty_fields=0&profile_group_id=' . $current_group_id  ) ) :
 
 	while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
 	<?php if ( bp_profile_has_multiple_groups() ) : ?>
@@ -60,8 +60,12 @@ if ( bp_has_profile( 'profile_group_id=' . $current_group_id  ) ) :
 
 						<?php
 						$field_type = bp_xprofile_create_field_type( bp_get_the_profile_field_type() );
-						$field_type->edit_field_html();
+						
+						$raw_properties = array(
+							'user_id' => wp_get_current_user()->ID 
+						);
 
+						$field_type->edit_field_html($raw_properties);
 						/**
 						 * Fires before the display of visibility options for the field.
 						 *
@@ -147,7 +151,7 @@ if ( bp_has_profile( 'profile_group_id=' . $current_group_id  ) ) :
 	
 <?php endwhile; endif; ?>
 </div> <!-- #bprp-profile-group -->
-			</div> <!-- #buddypress -->
+</div> <!-- #buddypress -->
 <?php
 
 /**
