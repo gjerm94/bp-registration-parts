@@ -41,6 +41,10 @@ class Bp_Registration_Parts_Public {
 	private $version;
 
 	/**
+	 * 
+	 */
+	private $step_counter;
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -51,7 +55,7 @@ class Bp_Registration_Parts_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
+		$this->step_counter = 0;
 	}
 
 	/**
@@ -107,55 +111,19 @@ class Bp_Registration_Parts_Public {
 	 * @since 	1.0.0
 	 */
 	public function display_part( $content ) {
-
-		$page_slug = 'post-reg-setup';
-		$step_counter = 0;
-
+		if ( isset( $_GET['step'])) {
+			$this->step_counter = $_GET['step'];
+		}
+			$page_slug = 'post-reg-setup';
+		
 		if ( basename( get_permalink( ) ) == $page_slug ) {
 
 			if ( in_the_loop() ) {
 			 
-				$group_ids = $this->get_profile_group_ids();
-				$form_action = "";
-
-				if (isset($_POST['current_group_id'])) {
-					
-					$current_group_id = $_POST['current_group_id'];
-					$step_counter = array_search($current_group_id, $group_ids);
-					$redirect_after_save = false;
-
-					if ( isset( $_POST['profile-group-edit-prev'])) {
-						
-						//Previous button is clicked, go back to previous group ID
-						$step_counter--;
-						$current_group_id = $group_ids[$step_counter];
-
-					} elseif (isset ( $_POST['profile-group-edit-submit'])) {
-
-						$step_counter++;
-						$current_group_id = $group_ids[$step_counter];
-
-						if ( $group_ids[$step_counter] ) {
-
-							$current_group_id = $group_ids[$step_counter];
-
-						} else {
-							
-							// All steps completed
-							// Update the meta value and redirect to profile
-							update_user_meta( get_current_user_id(), '_bprp_completed', true);
-							$redirect_after_save = true;
-							$redirect_url = bp_loggedin_user_domain();
-
-						}
-							
-					}
-				} else {
-
-					$current_group_id = $group_ids[0];
-				}
+				require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/edit.php';
 
 				require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';
+
 			}		
 		
 		}
@@ -186,8 +154,15 @@ class Bp_Registration_Parts_Public {
 		}
 
 		return $group_ids;
+
 	}
 
+	/**
+	 * Gets the current step number
+	 */
+	public function get_step_counter() {
+		return $this->step_counter;
+	}
 	/**
 	 * Used with usort to sort field groups by group order in ascending order
 	 */
@@ -249,4 +224,16 @@ class Bp_Registration_Parts_Public {
 
 	}
 
+	/**
+	 * Adds compatibility with BP Conditional Profile Fields plugin
+	 * 
+	 * @since 	1.0.0
+	 */
+	public function add_bpcpf_compat($is_active) {
+		$bprp = new Bp_Registration_Parts();
+		if ( $bprp->is_parts_page() ) {
+			$is_active = true;
+		}
+		return $is_active;
+	}
 }

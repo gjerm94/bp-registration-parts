@@ -133,7 +133,6 @@ class Bp_Registration_Parts {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-bp-registration-parts-public.php';
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-bp-registration-parts-template-loader.php';	
 
 		$this->loader = new Bp_Registration_Parts_Loader();
 
@@ -187,6 +186,7 @@ class Bp_Registration_Parts {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		
 		$this->loader->add_filter( 'the_content', $plugin_public, 'display_part' );
+		$this->loader->add_filter( 'bp_is_conditional_profile_field_active', $plugin_public, 'add_bpcpf_compat' );
 	}
 
 	/**
@@ -242,6 +242,16 @@ class Bp_Registration_Parts {
 	}
 
 	/**
+	 * Retrieve the slug of the page used to display the parts template.
+	 *
+	 * @since     1.0.0
+	 * @return    string    The page slug.
+	 */
+	public function get_parts_slug() {
+		return $this->parts_slug;
+	}
+
+	/**
 	 * Registers bprp_completed meta for user.
 	 * 
 	 * This meta field is used to determine if a user has completed the registration steps.
@@ -249,7 +259,6 @@ class Bp_Registration_Parts {
 	 * @since 	1.0.0
 	 */
 	public function add_bprp_completed_meta( $user_id ) {
-		//TODO: test this
 		add_user_meta( $user_id, '_bprp_completed', false ); 
 	}
 
@@ -267,7 +276,7 @@ class Bp_Registration_Parts {
 			
 			if ( ! $completed ) {
 				
-				if ( home_url( $_SERVER['REQUEST_URI'] ) != home_url( $this->parts_slug ) ) {
+				if ( ! $this->is_parts_page() ) {
 					
 					wp_redirect( home_url( $this->parts_slug ) );	
 					exit;
@@ -281,7 +290,7 @@ class Bp_Registration_Parts {
 	}
 
 	public function is_parts_page() {
-		return home_url( $_SERVER['REQUEST_URI'] ) === home_url( $this->parts_slug ); 
+		return home_url( parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) ) === home_url( $this->parts_slug ); 
 	}
 
 }

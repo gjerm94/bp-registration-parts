@@ -14,24 +14,61 @@
  * @since 1.0.0
  *
  */
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
 
- xprofile_screen_edit_profile();
+$group_ids = $this->get_profile_group_ids();
+$form_action = "";
+$redirect_after_save = false;
+if (isset($_POST['current_group_id'])) {
+	
+	$current_group_id = $_POST['current_group_id'];
+	$this->step_counter = array_search($current_group_id, $group_ids);
+
+	if ( isset( $_POST['profile-group-edit-prev'])) {
+		
+		//Previous button is clicked, go back to previous group ID
+		$this->step_counter--;
+		$current_group_id = $group_ids[$this->step_counter];
+
+	} elseif (isset ( $_POST['profile-group-edit-submit'])) {
+
+		$this->step_counter++;
+		$current_group_id = $group_ids[$this->step_counter];
+
+		if ( $group_ids[$this->step_counter] ) {
+
+			$current_group_id = $group_ids[$this->step_counter];
+
+		} else {
+			
+			// All steps completed
+			// Update the meta value and redirect to profile
+			update_user_meta( get_current_user_id(), '_bprp_completed', true);
+			$redirect_after_save = true;
+			$redirect_url = bp_loggedin_user_domain();
+
+		}
+	}
+} else {
+	if (isset($_GET['group_id'])) {
+		$current_group_id = (int) $_GET['group_id'];
+	} else {
+		$current_group_id = $group_ids[0];
+	}
+}
+
+if ( isset( $_POST['profile-group-edit-submit']) || isset( $_POST['profile-group-edit-prev'])) {
+
+	xprofile_screen_edit_profile();
+
+	$bprp = new Bp_Registration_Parts();
+	if ( ! $redirect_after_save ) {
+		bp_core_redirect( home_url( $bprp->get_parts_slug() ) . '?step=' . $this->step_counter . '&group_id=' . $current_group_id);
+	}
+}
+
 function xprofile_screen_edit_profile() {
-
-	if ( ! bp_is_my_profile() && ! bp_current_user_can( 'bp_moderate' ) ) {
-		//return false;
-	}
-
-	// Make sure a group is set.
-	if ( ! bp_action_variable( 1 ) ) {
-		//bp_core_redirect( trailingslashit( bp_displayed_user_domain() . bp_get_profile_slug() . '/edit/group/1' ) );
-	}
-
-	// Check the field group exists.
-	if ( ! bp_is_action_variable( 'group' ) || ! xprofile_get_field_group( bp_action_variable( 1 ) ) ) {
-		//bp_do_404();
-		//return;
-	}
 
 	// No errors.
 	$errors = false;
@@ -135,9 +172,6 @@ function xprofile_screen_edit_profile() {
 			} else {
 				bp_core_add_message( __( 'Changes saved.', 'buddypress' ) );
 			}
-
-			// Redirect back to the edit screen to display the updates and message.
-			//bp_core_redirect( trailingslashit( bp_displayed_user_domain() . bp_get_profile_slug() . '/edit/group/' . bp_action_variable( 1 ) ) );
 		}
 	}
 
@@ -148,12 +182,4 @@ function xprofile_screen_edit_profile() {
 	 */
 	do_action( 'xprofile_screen_edit_profile' );
 
-	/**
-	 * Filters the template to load for the XProfile edit screen.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $template Path to the XProfile edit template to load.
-	 */
-	//bp_core_load_template( apply_filters( 'xprofile_template_edit_profile', 'members/single/home' ) );
 }

@@ -13,7 +13,9 @@
 ?>
 
 <?php
-require_once plugin_dir_path(dirname(__FILE__)) . 'templates/edit.php';
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 if ( $redirect_after_save ) {
 	$redirect_url = apply_filters('bprp_completed_redirect_url', $redirect_url );
@@ -26,16 +28,14 @@ do_action( 'bp_before_profile_edit_content' ); ?>
 <div id="bprp-profile-group">
 
 <?php
-if ( bp_has_profile( 'user_id=' . wp_get_current_user()->ID . '&fetch_field_data=true&hide_empty_fields=0&profile_group_id=' . $current_group_id  ) ) :
+
+if ( bp_has_profile( 'user_id=' . get_current_user_id() . '&fetch_field_data=true&hide_empty_fields=0&profile_group_id=' . $current_group_id  ) ) :
 
 	while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
 	<?php if ( bp_profile_has_multiple_groups() ) : ?>
-					<ul class="button-nav" aria-label="<?php //esc_attr_e( 'Profile field groups', 'buddypress' ); ?>" role="navigation">
+					<ul class="button-nav" role="navigation">
 
-						<?php 
-						//bp_profile_group_tabs();
-						$this->display_field_groups_nav($group_ids, $current_group_id);
-						 ?>
+						<?php $this->display_field_groups_nav($group_ids, $current_group_id); ?>
 
 					</ul>
 				<?php endif ;?>
@@ -46,7 +46,7 @@ if ( bp_has_profile( 'user_id=' . wp_get_current_user()->ID . '&fetch_field_data
 				/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
 				do_action( 'bp_before_profile_field_content' ); ?>
 
-				<h2><?php printf( __( 'Step %s: %s', 'bp-registration-parts' ), $step_counter + 1, bp_get_the_profile_group_name()); ?></h2>
+				<h2><?php printf( __( 'Step %s: %s', 'bp-registration-parts' ), $this->step_counter + 1, bp_get_the_profile_group_name()); ?></h2>
 
 
 				
@@ -62,8 +62,10 @@ if ( bp_has_profile( 'user_id=' . wp_get_current_user()->ID . '&fetch_field_data
 						$field_type = bp_xprofile_create_field_type( bp_get_the_profile_field_type() );
 						
 						$raw_properties = array(
-							'user_id' => wp_get_current_user()->ID 
+							'user_id' => get_current_user_id()
 						);
+						$dv = Devb_Conditional_XProfile_Field_Helper::get_instance();
+						//var_dump($dv->to_js_objects());	
 
 						$field_type->edit_field_html($raw_properties);
 						/**
@@ -133,7 +135,7 @@ if ( bp_has_profile( 'user_id=' . wp_get_current_user()->ID . '&fetch_field_data
 			
 				<?php 
 				$text = __('Next step ❯', 'bp-registration-parts');
-				if ( $this->is_last_step($group_ids, $step_counter)) {
+				if ( $this->is_last_step($group_ids, $this->step_counter)) {
 					$text = __('Save & submit', 'bp-registration-parts');
 				}
 				?>
