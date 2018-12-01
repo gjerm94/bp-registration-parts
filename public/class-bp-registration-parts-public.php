@@ -52,10 +52,11 @@ class Bp_Registration_Parts_Public {
 	 * @param      string    $version    The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
-
+		
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->step_counter = 0;
+	
 	}
 
 	/**
@@ -64,21 +65,7 @@ class Bp_Registration_Parts_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Bp_Registration_Parts_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Bp_Registration_Parts_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/bp-registration-parts-public.css', array(), $this->version, 'all' );
-
 	}
 
 	/**
@@ -87,21 +74,7 @@ class Bp_Registration_Parts_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Bp_Registration_Parts_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Bp_Registration_Parts_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/bp-registration-parts-public.js', array( 'jquery' ), $this->version, false );
-
 	}
 
 	/**
@@ -187,6 +160,7 @@ class Bp_Registration_Parts_Public {
 		}
 
 		return false;
+
 	}
 
 	/**
@@ -198,6 +172,7 @@ class Bp_Registration_Parts_Public {
 	 * @since 	1.0.0
 	 */
 	public function display_field_groups_nav( $group_ids, $current_group_id ) {
+		
 		for ( $i = 0, $count = count($group_ids); $i < $count; ++$i ) {
 			
 			$group = new BP_XProfile_Group($id = $group_ids[$i]);
@@ -230,10 +205,14 @@ class Bp_Registration_Parts_Public {
 	 * @since 	1.0.0
 	 */
 	public function add_bpcpf_compat($is_active) {
+		
 		$bprp = new Bp_Registration_Parts();
+		
 		if ( $bprp->is_parts_page() ) {
 			$is_active = true;
 		}
+		
 		return $is_active;
+	
 	}
 }
