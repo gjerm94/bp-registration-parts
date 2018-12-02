@@ -84,24 +84,50 @@ class Bp_Registration_Parts_Public {
 	 * @since 	1.0.0
 	 */
 	public function display_part( $content ) {
+		
+		$step = "";
+
 		if ( isset( $_GET['step'])) {
-			$this->step_counter = $_GET['step'];
+			if ( $_GET['step'] == 'avatar_upload') {
+				$step = 'avatar_upload';
+			} else {
+				$this->step_counter = $_GET['step'];
+			}
 		}
 			$page_slug = 'post-reg-setup';
 		
 		if ( basename( get_permalink( ) ) == $page_slug ) {
 
 			if ( in_the_loop() ) {
-			 
-				require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/edit.php';
+				
+				if ( $step == 'avatar_upload') {
 
-				require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';
+					//bp_attachments_enqueue_scripts( 'BP_Attachment_Avatar' );
+		
+					require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/change-avatar.php';
+					//xprofile_screen_change_avatar();
 
+				} else {	
+					
+					require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/edit.php';
+
+					require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';
+				
+				}
+			
 			}		
 		
 		}
 	
 		return $content;
+
+	}
+
+	public function display_avatar_edit() {
+
+	}
+
+	public function display_friend_suggestions() {
 
 	}
 

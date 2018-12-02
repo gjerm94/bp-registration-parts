@@ -179,7 +179,7 @@ class Bp_Registration_Parts {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-
+	
 		$plugin_public = new Bp_Registration_Parts_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
@@ -187,6 +187,7 @@ class Bp_Registration_Parts {
 		
 		$this->loader->add_filter( 'the_content', $plugin_public, 'display_part' );
 		$this->loader->add_filter( 'bp_is_conditional_profile_field_active', $plugin_public, 'add_bpcpf_compat' );
+		
 	}
 
 	/**
@@ -197,6 +198,8 @@ class Bp_Registration_Parts {
 	 */
 	private function define_core_hooks() {
 
+		$this->loader->add_filter( 'bp_attachment_avatar_params', $this, 'filter_bp_attachment_avatar_params' ); 
+		$this->loader->add_filter( 'bp_avatar_is_front_edit', $this, 'add_avatar_functionality' );
 		$this->loader->add_action( 'user_register', $this, 'add_bprp_completed_meta' );
 		$this->loader->add_action( 'template_redirect', $this, 'redirect_to_part_page' );
 
@@ -289,8 +292,47 @@ class Bp_Registration_Parts {
 	
 	}
 
+	/**
+	 * Adds buddypress avatar edit page functionality
+	 * 
+	 * @since 	1.0.0
+	 */
+	public function add_avatar_functionality( $retval ) {
+		
+		if ( $this->is_parts_page()) {
+			$retval = true;
+		}
+	
+		return $retval;
+
+	}
+
 	public function is_parts_page() {
 		return home_url( parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) ) === home_url( $this->parts_slug ); 
 	}
+
+	/**
+	 * Filters the bp avatar params so it fetches the right user ID.
+	 * 
+	 * @since 	1.0.0
+	 */
+	public function filter_bp_attachment_avatar_params( $bp_params ) { 
+
+		if ( $this->is_parts_page ) {
+			
+			$bp_params = array(
+				'object'     => 'user',
+				'item_id'    => get_current_user_id(),
+				'nonces'  => array(
+					'set'    => wp_create_nonce( 'bp_avatar_cropstore' ),
+					'remove' => wp_create_nonce( 'bp_delete_avatar_link' ),
+				),
+			);
+			
+		}
+		
+		return $bp_params; 
+
+	} 
 
 }

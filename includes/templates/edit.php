@@ -20,6 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 $group_ids = $this->get_profile_group_ids();
 $form_action = "";
 $redirect_after_save = false;
+$field_groups_completed = false;
 if (isset($_POST['current_group_id'])) {
 	
 	$current_group_id = $_POST['current_group_id'];
@@ -42,11 +43,13 @@ if (isset($_POST['current_group_id'])) {
 
 		} else {
 			
-			// All steps completed
+			// Profile fields completed
+			// Maybe show avatar upload
+			$field_groups_completed = true;
 			// Update the meta value and redirect to profile
-			update_user_meta( get_current_user_id(), '_bprp_completed', true);
-			$redirect_after_save = true;
-			$redirect_url = bp_loggedin_user_domain();
+			//update_user_meta( get_current_user_id(), '_bprp_completed', true);
+			//$redirect_after_save = true;
+			//$redirect_url = bp_loggedin_user_domain();
 
 		}
 	}
@@ -63,8 +66,10 @@ if ( isset( $_POST['profile-group-edit-submit']) || isset( $_POST['profile-group
 	xprofile_screen_edit_profile();
 
 	$bprp = new Bp_Registration_Parts();
-	if ( ! $redirect_after_save ) {
+	if ( ! $field_groups_completed ) {
 		bp_core_redirect( home_url( $bprp->get_parts_slug() ) . '?step=' . $this->step_counter . '&group_id=' . $current_group_id);
+	} else {
+		wp_redirect(home_url( $bprp->get_parts_slug() ) . '?step=' . 'avatar_upload');
 	}
 }
 
