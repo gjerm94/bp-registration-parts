@@ -9,6 +9,7 @@
 
 ?>
 
+
 <h2><?php _e( 'Change Profile Photo', 'buddypress' ); ?></h2>
 
 <?php
@@ -20,15 +21,13 @@
  */
 do_action( 'bp_before_profile_avatar_upload_content' ); ?>
 
-<?php log_me('eeeee'); ?>
-
 <div id ="buddypress">
 
 <?php if ( !(int)bp_get_option( 'bp-disable-avatar-uploads' ) ) : ?>
 
 	<p><?php _e( 'Your profile photo will be used on your profile and throughout the site. If there is a <a href="http://gravatar.com">Gravatar</a> associated with your account email we will use that, or you can upload an image from your computer.', 'buddypress' ); ?></p>
 
-	<form action="" method="post" id="avatar-upload-form" class="standard-form" enctype="multipart/form-data">
+	<form action="<?php echo $form_action; ?>" method="post" id="avatar-upload-form" class="standard-form" enctype="multipart/form-data">
 
 		<?php if ( 'upload-image' == bp_get_avatar_admin_step() ) : ?>
 
@@ -86,6 +85,10 @@ do_action( 'bp_before_profile_avatar_upload_content' ); ?>
 <?php endif; ?>
 
 </div>
+
+<form action="<?php echo $form_action; ?>" id="profile-edit-form">
+	<?php $this->display_prev_next_buttons($group_ids, $step_num); ?>
+</form>
 
 <?php
 

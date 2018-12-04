@@ -22,6 +22,22 @@ if ( $redirect_after_save ) {
 	wp_redirect($redirect_url);
 }
 
+require_once plugin_dir_path(dirname(__FILE__)) . 'templates/edit.php';
+
+if ( isset( $_POST['profile-group-edit-submit']) ) {
+
+    xprofile_screen_edit_profile();
+    
+    $bprp = new Bp_Registration_Parts();
+    if ( ! $field_groups_completed ) {
+        bp_core_redirect( home_url( $bprp->get_parts_slug() ) . '?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id']);
+    } else {
+        wp_redirect(home_url( $bprp->get_parts_slug() ) . '?step=' . '');
+    }
+} elseif ( isset( $_POST['profile-group-edit-prev']) ) {
+    bp_core_redirect( home_url( $bprp->get_parts_slug() ) . '?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id']);
+}
+
 do_action( 'bp_before_profile_edit_content' ); ?>
 
 <div id ="buddypress">
@@ -29,24 +45,24 @@ do_action( 'bp_before_profile_edit_content' ); ?>
 
 <?php
 
-if ( bp_has_profile( 'user_id=' . get_current_user_id() . '&fetch_field_data=true&hide_empty_fields=0&profile_group_id=' . $current_group_id  ) ) :
+if ( bp_has_profile( 'user_id=' . get_current_user_id() . '&fetch_field_data=true&hide_empty_fields=0&profile_group_id=' . $group_ids[$step_num]['id']  ) ) :
 
 	while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
 	<?php if ( bp_profile_has_multiple_groups() ) : ?>
 					<ul class="button-nav" role="navigation">
 
-						<?php $this->display_field_groups_nav($group_ids, $current_group_id); ?>
+						<?php $this->display_field_groups_nav($group_ids, $group_ids[$step_num]['id']); ?>
 
 					</ul>
 				<?php endif ;?>
 	
-		<form action="<?php echo $form_action; ?>" method="post" id="profile-edit-form" class="standard-form <?php bp_the_profile_group_slug(); ?>">
+		<form action="" method="post" id="profile-edit-form" class="standard-form <?php bp_the_profile_group_slug(); ?>">
 			
 			<?php
 				/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
 				do_action( 'bp_before_profile_field_content' ); ?>
 
-				<h2><?php printf( __( 'Step %s: %s', 'bp-registration-parts' ), $this->step_counter + 1, bp_get_the_profile_group_name()); ?></h2>
+				<h2><?php printf( __( 'Step %s: %s', 'bp-registration-parts' ), $step_num + 1, bp_get_the_profile_group_name()); ?></h2>
 
 
 				
@@ -128,25 +144,15 @@ if ( bp_has_profile( 'user_id=' . get_current_user_id() . '&fetch_field_data=tru
 			do_action( 'bp_after_profile_field_content' ); ?>
 
 			<div class="submit">
-			
-				<?php if ( !$this->is_first_step($group_ids, $current_group_id) ) : ?>
-					<input type="submit" name="profile-group-edit-prev" id="profile-group-edit-prev" value="<?php esc_attr_e( '❮ Previous step', 'bp-registration-parts' ); ?> " />	
-				<?php endif; ?> 
-			
-				<?php 
-				$text = __('Next step ❯', 'bp-registration-parts');
-				if ( $this->is_last_step($group_ids, $this->step_counter)) {
-					$text = __('Save & submit', 'bp-registration-parts');
-				}
-				?>
 
-				<input type="submit" name="profile-group-edit-submit" id="profile-group-edit-submit" value="<?php esc_attr_e( $text, 'bp-registration-parts' ); ?> " />
+
+			<?php $this->display_prev_next_buttons($group_ids, $step_num); ?>			
 				
 			
 			</div>
 
 			<input type="hidden" name="field_ids" id="field_ids" value="<?php bp_the_profile_field_ids(); ?>" />
-			<input type="hidden" name="current_group_id" id="current_group_id" value="<?php echo $current_group_id; ?>" />
+			<input type="hidden" name="current_group_id" id="current_group_id" value="<?php echo $group_ids[$step_num]['id']; ?>" />
 			<?php wp_nonce_field( 'bp_xprofile_edit' ); ?>
 
 		</form>

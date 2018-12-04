@@ -14,4 +14,12 @@
 		}
 	});
 
+	
+	/**$(window).load(function() {
+		bp.Avatar.Attachment.on( 'change:url', function( data ) {
+			window.location.replace("http://local.agric.no/post-reg-setup?step=avatar_upload");
+								} );
+		});*/	
+		
+
 })( jQuery );

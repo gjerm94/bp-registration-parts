@@ -318,7 +318,7 @@ class Bp_Registration_Parts {
 	 */
 	public function filter_bp_attachment_avatar_params( $bp_params ) { 
 
-		if ( $this->is_parts_page ) {
+		if ( $this->is_parts_page() ) {
 			
 			$bp_params = array(
 				'object'     => 'user',

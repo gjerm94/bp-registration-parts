@@ -44,6 +44,7 @@ class Bp_Registration_Parts_Public {
 	 * 
 	 */
 	private $step_counter;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -84,41 +85,49 @@ class Bp_Registration_Parts_Public {
 	 * @since 	1.0.0
 	 */
 	public function display_part( $content ) {
-		
-		$step = "";
-
-		if ( isset( $_GET['step'])) {
-			if ( $_GET['step'] == 'avatar_upload') {
-				$step = 'avatar_upload';
-			} else {
-				$this->step_counter = $_GET['step'];
-			}
-		}
-			$page_slug = 'post-reg-setup';
-		
-		if ( basename( get_permalink( ) ) == $page_slug ) {
-
-			if ( in_the_loop() ) {
-				
-				if ( $step == 'avatar_upload') {
-
-					//bp_attachments_enqueue_scripts( 'BP_Attachment_Avatar' );
-		
-					require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/change-avatar.php';
-					//xprofile_screen_change_avatar();
-
-				} else {	
-					
-					require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/edit.php';
-
-					require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';
-				
-				}
-			
-			}		
-		
-		}
 	
+	$bprp = new Bp_Registration_Parts();	
+	$page_slug = $bprp->get_parts_slug();	
+	$step_num = 0;
+
+			if ( isset( $_GET['step'])) {
+				$step_num = $_GET['step'];
+			}
+	if ( basename( get_permalink( ) ) == $page_slug ) {
+
+		if ( in_the_loop() ) {
+			
+			$group_ids = $this->get_profile_group_ids();
+
+			
+
+			// Change the step number according to which button was clicked.
+			if ( isset( $_POST['profile-group-edit-submit']) || isset( $_POST['profile-group-edit-prev'] ) ) {
+
+				if (isset ( $_POST['profile-group-edit-submit'] ) ) {
+
+					$step_num++; 
+
+				} elseif ( isset( $_POST['profile-group-edit-prev'] ) ) {
+
+					$step_num--;
+
+				} 
+			
+			}
+
+			// Load the right template.
+			if ( $group_ids[$step_num]['id'] == 'avatar_upload' ) {
+				require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/change-avatar.php';	
+			} elseif ( $group_ids[$step_num]['id'] == 'suggestions' ) {
+
+			} else {
+				require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';	
+			}
+		
+		}		
+	
+	}
 		return $content;
 
 	}
@@ -142,16 +151,32 @@ class Bp_Registration_Parts_Public {
 		
 		$group_ids = [];
 
-		$args = apply_filters( 'bprp_xprofile_groups_args', $args );
+		$args = apply_filters( 'bprp_xprofile_groups_args', array() );
 		
 		$groups = bp_xprofile_get_groups( $args );
 		
 		usort( $groups, array( $this, 'sort_group_by_order' ));	
 		
 		foreach ( $groups as $group ) {
-				$group_ids[] = $group->id;
+				$group_ids[] = array(
+					'id' => $group->id,
+					'name' => $group->name
+				);
 		}
 
+		if ( $this->should_show_avatar_upload() ) {
+			$group_ids[] = array( 
+				'id' 	=> 'avatar_upload',
+				'name'  => __( 'Profile Photo', 'bp-registration-parts')
+			);
+		}
+
+		if ( $this->should_show_suggestions() ) {
+			$groups_ids[] = array( 
+				'id' 	=>'suggestions',
+				'name'  => __( 'Add some friends!', 'bp-registration-parts' ) 
+			);
+		}
 		return $group_ids;
 
 	}
@@ -172,21 +197,52 @@ class Bp_Registration_Parts_Public {
 	/**
 	 * Check if last step of registration
 	 */
-	public function is_first_step( $group_ids, $current_group_id ) {
-		return $current_group_id == $group_ids[0];
-	}
-
-	/**
-	 * Check if first step of registration
-	 */
-	public function is_last_step( $group_ids, $current_step ) {
+	public function is_first_step( $group_ids, $step_num ) {
 		
-		if ( $group_ids[$current_step] == end( $group_ids ) ) {
+		if ( $step_num < 1 ) {
 			return true;
 		}
 
 		return false;
 
+	}
+
+	/**
+	 * Check if first step of registration
+	 */
+	public function is_last_step( $group_ids, $step_num ) {
+	
+		return $group_ids[$step_num] == end( $group_ids );
+		
+	}
+
+	public function should_show_suggestions() {
+		return false;
+	}
+
+	public function should_show_avatar_upload() {
+		return true;
+	}
+
+	public function is_suggestions_page() {
+		if ( isset( $_GET['step'] )) {
+			if ( $_GET['step'] == 'suggestions' ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function is_avatar_upload_page() {
+
+		if ( isset( $_GET['step'] )) {
+			if ( $_GET['step'] == 'avatar_upload' ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -201,11 +257,11 @@ class Bp_Registration_Parts_Public {
 		
 		for ( $i = 0, $count = count($group_ids); $i < $count; ++$i ) {
 			
-			$group = new BP_XProfile_Group($id = $group_ids[$i]);
+			//$group = new BP_XProfile_Group($id = $group_ids[$i]->id);
 			// Setup the selected class.
 			$selected = '';
 			
-			if ( $current_group_id === $group->id ) {
+			if ( $group_ids[$i]['id'] === $current_group_id ) {
 				$selected = ' class="current"';
 			}
 
@@ -216,7 +272,7 @@ class Bp_Registration_Parts_Public {
 				'<li %1$s><span class="registration-step">%2$s</span><span class="profile-group-name">%3$s</span></li>',
 				$selected,
 				esc_html( $step ),
-				esc_html( apply_filters( 'bprp_get_the_profile_group_name', $group->name ) )
+				esc_html( apply_filters( 'bprp_get_the_profile_group_name', $group_ids[$i]['name'] ) )
 			);
 		
 		}
@@ -240,5 +296,31 @@ class Bp_Registration_Parts_Public {
 		
 		return $is_active;
 	
+	}
+
+	/**
+	 * Displays the previous and/or next buttons
+	 * 
+	 * @since 	1.0.0
+	 */
+	public function display_prev_next_buttons($group_ids, $step_num) {
+		?>
+		
+			
+			<?php if ( !$this->is_first_step($group_ids, $step_num) ) : ?>
+				<input type="submit" name="profile-group-edit-prev" id="profile-group-edit-prev" value="<?php esc_attr_e( '❮ Previous step', 'bp-registration-parts' ); ?> " />	
+			<?php endif; ?> 
+		
+			<?php 
+			$text = __('Next step ❯', 'bp-registration-parts');
+			if ( $this->is_last_step($group_ids, $step_num)) {
+				$text = __('Save & submit', 'bp-registration-parts');
+			}
+			?>
+
+			<input type="submit" name="profile-group-edit-submit" id="profile-group-edit-submit" value="<?php esc_attr_e( $text, 'bp-registration-parts' ); ?> " />
+			
+		
+		<?php
 	}
 }
