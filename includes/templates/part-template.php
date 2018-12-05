@@ -17,55 +17,42 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if ( $redirect_after_save ) {
-	$redirect_url = apply_filters('bprp_completed_redirect_url', $redirect_url );
-	wp_redirect($redirect_url);
-}
-
 require_once plugin_dir_path(dirname(__FILE__)) . 'templates/edit.php';
 
 if ( isset( $_POST['profile-group-edit-submit']) ) {
 
     xprofile_screen_edit_profile();
-    
-    $bprp = new Bp_Registration_Parts();
-    if ( ! $field_groups_completed ) {
-        bp_core_redirect( home_url( $bprp->get_parts_slug() ) . '?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id']);
-    } else {
-        wp_redirect(home_url( $bprp->get_parts_slug() ) . '?step=' . '');
-    }
-} elseif ( isset( $_POST['profile-group-edit-prev']) ) {
-    bp_core_redirect( home_url( $bprp->get_parts_slug() ) . '?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id']);
+  
 }
+
+$this->redirect_after_submit( $group_ids, $step_num );
 
 do_action( 'bp_before_profile_edit_content' ); ?>
 
 <div id ="buddypress">
-<div id="bprp-profile-group">
+<div id="bprp-profile-group-nav-wrap">
 
 <?php
 
 if ( bp_has_profile( 'user_id=' . get_current_user_id() . '&fetch_field_data=true&hide_empty_fields=0&profile_group_id=' . $group_ids[$step_num]['id']  ) ) :
 
 	while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
+
 	<?php if ( bp_profile_has_multiple_groups() ) : ?>
-					<ul class="button-nav" role="navigation">
+		<ul class="button-nav" role="navigation">
 
-						<?php $this->display_field_groups_nav($group_ids, $group_ids[$step_num]['id']); ?>
+			<?php $this->display_field_groups_nav($group_ids, $group_ids[$step_num]['id']); ?>
 
-					</ul>
-				<?php endif ;?>
-	
+		</ul>
+	<?php endif ;?>
+  	<div id="bprp-profile-group">	
 		<form action="" method="post" id="profile-edit-form" class="standard-form <?php bp_the_profile_group_slug(); ?>">
 			
 			<?php
 				/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
 				do_action( 'bp_before_profile_field_content' ); ?>
 
-				<h2><?php printf( __( 'Step %s: %s', 'bp-registration-parts' ), $step_num + 1, bp_get_the_profile_group_name()); ?></h2>
-
-
-				
+				<h2><?php printf( __( 'Step %s: %s', 'bp-registration-parts' ), $step_num + 1, $group_ids[$step_num]['name']); ?></h2>
 
 				<div class="clear"></div>
 
@@ -156,9 +143,9 @@ if ( bp_has_profile( 'user_id=' . get_current_user_id() . '&fetch_field_data=tru
 			<?php wp_nonce_field( 'bp_xprofile_edit' ); ?>
 
 		</form>
-	
+	</div> <!-- #bprp-profile-group -->		
 <?php endwhile; endif; ?>
-</div> <!-- #bprp-profile-group -->
+</div> <!-- #bprp-profile-group-nav-wrap -->
 </div> <!-- #buddypress -->
 <?php
 

@@ -56,7 +56,6 @@ class Bp_Registration_Parts_Public {
 		
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-		$this->step_counter = 0;
 	
 	}
 
@@ -79,70 +78,66 @@ class Bp_Registration_Parts_Public {
 	}
 
 	/**
-	 * Displays a part of the registration
+	 * Displays a part of the registration.
+	 * 
+	 * Handles the display of each step in the registration process.
 	 * 
 	 * @todo 	Allow users to change the page instead of hard coding the slug
 	 * @since 	1.0.0
 	 */
 	public function display_part( $content ) {
 	
-	$bprp = new Bp_Registration_Parts();	
-	$page_slug = $bprp->get_parts_slug();	
-	$step_num = 0;
+		$bprp = new Bp_Registration_Parts();	
+		$page_slug = $bprp->get_parts_slug();	
+		$step_num = 0;
 
-			if ( isset( $_GET['step'])) {
-				$step_num = $_GET['step'];
-			}
-	if ( basename( get_permalink( ) ) == $page_slug ) {
+		if ( isset( $_GET['step'])) {
+			$step_num = $_GET['step'];
+		}
 
-		if ( in_the_loop() ) {
+		if ( basename( get_permalink( ) ) == $page_slug ) {
+
+			if ( in_the_loop() ) {
+				
+				$group_ids = $this->get_profile_group_ids();
+
+				
+
+				// Change the step number according to which button was clicked.
+				if ( isset( $_POST['profile-group-edit-submit']) || isset( $_POST['profile-group-edit-prev'] ) ) {
+
+					if (isset ( $_POST['profile-group-edit-submit'] ) ) {
+
+						$step_num++; 
+
+					} elseif ( isset( $_POST['profile-group-edit-prev'] ) ) {
+
+						$step_num--;
+
+					} 
+				
+				}
+
+				// Load the right template.
+				if ( $group_ids[$step_num]['id'] == 'avatar_upload' ) {
+					require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/change-avatar.php';	
+				} elseif ( $group_ids[$step_num]['id'] == 'suggestions' ) {
+					require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/friend-suggestions.php';		
+				} else {
+					require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';	
+				}
 			
-			$group_ids = $this->get_profile_group_ids();
-
-			
-
-			// Change the step number according to which button was clicked.
-			if ( isset( $_POST['profile-group-edit-submit']) || isset( $_POST['profile-group-edit-prev'] ) ) {
-
-				if (isset ( $_POST['profile-group-edit-submit'] ) ) {
-
-					$step_num++; 
-
-				} elseif ( isset( $_POST['profile-group-edit-prev'] ) ) {
-
-					$step_num--;
-
-				} 
-			
-			}
-
-			// Load the right template.
-			if ( $group_ids[$step_num]['id'] == 'avatar_upload' ) {
-				require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/change-avatar.php';	
-			} elseif ( $group_ids[$step_num]['id'] == 'suggestions' ) {
-
-			} else {
-				require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';	
-			}
+			}		
 		
-		}		
-	
-	}
+		}
+			
 		return $content;
 
 	}
 
-	public function display_avatar_edit() {
-
-	}
-
-	public function display_friend_suggestions() {
-
-	}
-
 	/**
-	 * Retrieves IDs of all xprofile field groups
-	 * IDs are sorted by group order in ascending order
+	 * Retrieves IDs of all xprofile field groups.
+	 * IDs are sorted by group order in ascending order.
 	 * 
 	 * @since 	1.0.0
 	 * @return  array 	The IDs
@@ -159,8 +154,8 @@ class Bp_Registration_Parts_Public {
 		
 		foreach ( $groups as $group ) {
 				$group_ids[] = array(
-					'id' => $group->id,
-					'name' => $group->name
+					'id' 	=> $group->id,
+					'name' 	=> $group->name
 				);
 		}
 
@@ -172,11 +167,12 @@ class Bp_Registration_Parts_Public {
 		}
 
 		if ( $this->should_show_suggestions() ) {
-			$groups_ids[] = array( 
+			$group_ids[] = array( 
 				'id' 	=>'suggestions',
 				'name'  => __( 'Add some friends!', 'bp-registration-parts' ) 
 			);
 		}
+
 		return $group_ids;
 
 	}
@@ -195,7 +191,9 @@ class Bp_Registration_Parts_Public {
 	}
 
 	/**
-	 * Check if last step of registration
+	 * Check if last step of registration.
+	 * 
+	 * @since 	1.0.0
 	 */
 	public function is_first_step( $group_ids, $step_num ) {
 		
@@ -208,7 +206,9 @@ class Bp_Registration_Parts_Public {
 	}
 
 	/**
-	 * Check if first step of registration
+	 * Check if first step of registration.
+	 * 
+	 * @since 	1.0.0
 	 */
 	public function is_last_step( $group_ids, $step_num ) {
 	
@@ -217,7 +217,7 @@ class Bp_Registration_Parts_Public {
 	}
 
 	public function should_show_suggestions() {
-		return false;
+		return true;
 	}
 
 	public function should_show_avatar_upload() {
@@ -306,7 +306,6 @@ class Bp_Registration_Parts_Public {
 	public function display_prev_next_buttons($group_ids, $step_num) {
 		?>
 		
-			
 			<?php if ( !$this->is_first_step($group_ids, $step_num) ) : ?>
 				<input type="submit" name="profile-group-edit-prev" id="profile-group-edit-prev" value="<?php esc_attr_e( '❮ Previous step', 'bp-registration-parts' ); ?> " />	
 			<?php endif; ?> 
@@ -322,5 +321,36 @@ class Bp_Registration_Parts_Public {
 			
 		
 		<?php
+	}
+
+	/**
+	 * Redirects after the previous or next button is clicked so get variables gets set correctly.
+	 * 
+	 * Also redirects away from setup page after user has completed all steps.
+	 * 
+	 * @since 	1.0.0
+	 */
+	public function redirect_after_submit( $group_ids, $step_num ) {
+		
+		$bprp = new Bp_Registration_Parts();	
+		
+		if ( isset( $_POST['profile-group-edit-submit']) ) {
+
+			
+			
+			if ( $group_ids[$step_num - 1] !== end($group_ids) ) {
+				bp_core_redirect( home_url( $bprp->get_parts_slug() ) . '?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id']);
+			} else {
+
+				// Steps completed
+				$redirect_url = bp_loggedin_user_domain();
+				apply_filters('bprp_completed_redirect_url', $redirect_url );
+				wp_redirect( $redirect_url );
+			
+			}
+		} elseif ( isset( $_POST['profile-group-edit-prev']) ) {
+			bp_core_redirect( home_url( $bprp->get_parts_slug() ) . '?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id']);
+		}
+	
 	}
 }

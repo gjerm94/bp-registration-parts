@@ -9,8 +9,19 @@
 
 ?>
 
+<?php
+	
+	if ( isset( $_POST['profile-group-edit-submit']) ) {
 
-<h2><?php _e( 'Change Profile Photo', 'buddypress' ); ?></h2>
+		// Save profile fields for the last field group.
+		require_once plugin_dir_path(dirname(__FILE__)) . 'templates/edit.php';
+    	xprofile_screen_edit_profile();
+  
+	}
+
+	$this->redirect_after_submit( $group_ids, $step_num );
+
+?>
 
 <?php
 
@@ -22,7 +33,15 @@
 do_action( 'bp_before_profile_avatar_upload_content' ); ?>
 
 <div id ="buddypress">
+<div id="bprp-profile-group-nav-wrap">
+<ul class="button-nav" role="navigation">
 
+<?php $this->display_field_groups_nav($group_ids, $group_ids[$step_num]['id']); ?>
+
+</ul>
+
+	<div id="bprp-profile-group">	
+	<h2><?php printf( __( 'Step %s: %s', 'bp-registration-parts' ), $step_num + 1, $group_ids[$step_num]['name']); ?></h2>
 <?php if ( !(int)bp_get_option( 'bp-disable-avatar-uploads' ) ) : ?>
 
 	<p><?php _e( 'Your profile photo will be used on your profile and throughout the site. If there is a <a href="http://gravatar.com">Gravatar</a> associated with your account email we will use that, or you can upload an image from your computer.', 'buddypress' ); ?></p>
@@ -84,12 +103,14 @@ do_action( 'bp_before_profile_avatar_upload_content' ); ?>
 
 <?php endif; ?>
 
-</div>
-
-<form action="<?php echo $form_action; ?>" id="profile-edit-form">
+<form action="" method="post" id="profile-edit-form" class="standard-form">
+<div class ="submit">
 	<?php $this->display_prev_next_buttons($group_ids, $step_num); ?>
+</div>
 </form>
-
+</div> <!-- #bprp-profile-group -->
+</div> <!-- #buddypress -->
+</div> <!-- #bprp-profile-group-nav-wrap -->
 <?php
 
 /**

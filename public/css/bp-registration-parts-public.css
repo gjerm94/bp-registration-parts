@@ -7,7 +7,7 @@
    Profile groups nav
    ========================================================================== */
 
-#bprp-profile-group .button-nav li {
+#bprp-profile-group-nav-wrap .button-nav li {
     /* grid-column-gap: 50px; */
     display: table;
     width: 100%;
@@ -30,27 +30,27 @@
     transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
 }
 
-#bprp-profile-group .button-nav li a {
+#bprp-profile-group-nav-wrap .button-nav li a {
     color: #fff
 }
 
-#bprp-profile-group .button-nav {
+#bprp-profile-group-nav-wrap .button-nav {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     display: grid;
     grid-gap: 10px;
 }
 
-#bprp-profile-group .button-nav li:not(.current) {
+#bprp-profile-group-nav-wrap .button-nav li:not(.current) {
     background-color:#CCC
 }
 
-#bprp-profile-group .button-nav .registration-step {
+#bprp-profile-group-nav-wrap .button-nav .registration-step {
     width: 40%;
     display: table-cell;
     vertical-align: middle;
 }
 
-#bprp-profile-group .button-nav .profile-group-name {
+#bprp-profile-group-nav-wrap .button-nav .profile-group-name {
         width: 68%;
         text-align: left;
         vertical-align: middle;
@@ -58,7 +58,7 @@
         display: table-cell;
 }
 
-#bprp-profile-group #profile-edit-form {
+#bprp-profile-group {
     padding: 10px;
     margin-top: 10px;
     border: 1px solid #ddd;
