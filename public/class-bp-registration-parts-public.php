@@ -246,30 +246,28 @@ class Bp_Registration_Parts_Public {
 	}
 
 	/**
-	 * Displays the group nav at the top of the part template
-	 * 
-	 * "Nav" is kind of misleading here because we are not adding any links
-	 * just the name of the group and the step #.
+	 * Displays the progress bar at the top of the form.
 	 * 
 	 * @since 	1.0.0
 	 */
-	public function display_field_groups_nav( $group_ids, $current_group_id ) {
-		
+	public function display_progress_bar( $group_ids, $step_num ) {
+	
+		echo '<ul id="progressbar">';
 		for ( $i = 0, $count = count($group_ids); $i < $count; ++$i ) {
 			
 			//$group = new BP_XProfile_Group($id = $group_ids[$i]->id);
 			// Setup the selected class.
 			$selected = '';
 			
-			if ( $group_ids[$i]['id'] === $current_group_id ) {
-				$selected = ' class="current"';
+			if ( $i <= $step_num ) {
+				$selected = ' class="active"';
 			}
 
-			$step = sprintf( __( 'Step %s: ', 'bp-registration-parts' ), $i + 1);
+			$step = $i + 1;
 			
 			//Add tab to end of tabs array.
 			$tabs[] = sprintf(
-				'<li %1$s><span class="registration-step">%2$s</span><span class="profile-group-name">%3$s</span></li>',
+				'<li %1$s><p>%3$s</p></li>',
 				$selected,
 				esc_html( $step ),
 				esc_html( apply_filters( 'bprp_get_the_profile_group_name', $group_ids[$i]['name'] ) )
@@ -278,7 +276,7 @@ class Bp_Registration_Parts_Public {
 		}
 
 		echo join( '', $tabs );
-
+		echo '</ul>';
 	}
 
 	/**
@@ -304,23 +302,24 @@ class Bp_Registration_Parts_Public {
 	 * @since 	1.0.0
 	 */
 	public function display_prev_next_buttons($group_ids, $step_num) {
-		?>
-		
-			<?php if ( !$this->is_first_step($group_ids, $step_num) ) : ?>
-				<input type="submit" name="profile-group-edit-prev" id="profile-group-edit-prev" value="<?php esc_attr_e( '❮ Previous step', 'bp-registration-parts' ); ?> " />	
+				
+			if ( !$this->is_first_step($group_ids, $step_num) ) : ?>
+				<button type="submit" name="profile-group-edit-prev" id="profile-group-edit-prev">
+				<i class="fas fa-arrow-left"></i> 
+					<?php esc_attr_e( 'Previous step', 'bp-registration-parts' ); ?>  
+				</button>	
 			<?php endif; ?> 
 		
-			<?php 
-			$text = __('Next step ❯', 'bp-registration-parts');
-			if ( $this->is_last_step($group_ids, $step_num)) {
-				$text = __('Save & submit', 'bp-registration-parts');
-			}
-			?>
-
-			<input type="submit" name="profile-group-edit-submit" id="profile-group-edit-submit" value="<?php esc_attr_e( $text, 'bp-registration-parts' ); ?> " />
-			
-		
-		<?php
+			<?php if ( $this->is_last_step($group_ids, $step_num)) : ?>
+				<button type="submit" name="profile-group-edit-submit" id="profile-group-edit-submit">
+					<i class="fas fa-check"></i> <?php esc_attr_e( 'Save & submit', 'bp-registration-parts' ); ?> 
+				</button>	
+			<?php else : ?>
+				<button type="submit" name="profile-group-edit-submit" id="profile-group-edit-submit" >
+					<?php esc_attr_e( 'Next step', 'bp-registration-parts' ); ?> 
+					<i class="fas fa-arrow-right"></i> 
+				</button>
+			<?php endif;
 	}
 
 	/**

@@ -34,11 +34,8 @@ do_action( 'bp_before_profile_avatar_upload_content' ); ?>
 
 <div id ="buddypress">
 <div id="bprp-profile-group-nav-wrap">
-<ul class="button-nav" role="navigation">
 
-<?php $this->display_field_groups_nav($group_ids, $group_ids[$step_num]['id']); ?>
-
-</ul>
+<?php $this->display_progress_bar($group_ids, $step_num); ?>
 
 	<div id="bprp-profile-group">	
 	<h2><?php printf( __( 'Step %s: %s', 'bp-registration-parts' ), $step_num + 1, $group_ids[$step_num]['name']); ?></h2>

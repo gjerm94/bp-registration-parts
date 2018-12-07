@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BP Registration Parts\n"
-"POT-Creation-Date: 2018-11-27 19:52+0100\n"
-"PO-Revision-Date: 2018-11-27 19:53+0100\n"
+"POT-Creation-Date: 2018-12-07 19:01+0100\n"
+"PO-Revision-Date: 2018-12-07 19:02+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nb\n"
@@ -15,54 +15,112 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;esc_attr_e\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: includes/templates/edit.php:68
+#: includes/templates/change-avatar.php:41
+#: includes/templates/friend-suggestions.php:9
+#: includes/templates/part-template.php:50
+#, php-format
+msgid "Step %s: %s"
+msgstr "Steg %s:  %s"
+
+#: includes/templates/change-avatar.php:44
+msgid ""
+"Your profile photo will be used on your profile and throughout the site. If "
+"there is a <a href=\"http://gravatar.com\">Gravatar</a> associated with your "
+"account email we will use that, or you can upload an image from your "
+"computer."
+msgstr ""
+
+#: includes/templates/change-avatar.php:51
+msgid ""
+"Click below to select a JPG, GIF or PNG format photo from your computer and "
+"then click 'Upload Image' to proceed."
+msgstr ""
+
+#: includes/templates/change-avatar.php:56
+msgid "Select an image"
+msgstr ""
+
+#: includes/templates/change-avatar.php:59
+msgid "Upload Image"
+msgstr ""
+
+#: includes/templates/change-avatar.php:67
+msgid "Crop Your New Profile Photo"
+msgstr ""
+
+#: includes/templates/change-avatar.php:69
+msgid "Profile photo to crop"
+msgstr ""
+
+#: includes/templates/change-avatar.php:72
+msgid "Profile photo preview"
+msgstr ""
+
+#: includes/templates/change-avatar.php:75
+msgid "Crop Image"
+msgstr ""
+
+#: includes/templates/change-avatar.php:99
+msgid ""
+"Your profile photo will be used on your profile and throughout the site. To "
+"change your profile photo, please create an account with <a href=\"https://"
+"gravatar.com\">Gravatar</a> using the same email address as you used to "
+"register with this site."
+msgstr ""
+
+#: includes/templates/edit.php:56
 msgid ""
 "Your changes have not been saved. Please fill in all required fields, and "
 "save your changes again."
 msgstr ""
 
-#: includes/templates/edit.php:134
+#: includes/templates/edit.php:122
 msgid ""
 "There was a problem updating some of your profile information. Please try "
 "again."
 msgstr ""
 
-#: includes/templates/edit.php:136
+#: includes/templates/edit.php:124
 msgid "Changes saved."
 msgstr ""
 
-#: includes/templates/part-template.php:48
-#, php-format
-msgid "Step %s: %s"
-msgstr "Steg %s:  %s"
+#: includes/templates/friend-suggestions.php:106
+msgid "Sorry, no members were found."
+msgstr ""
 
-#: includes/templates/part-template.php:76
-#: includes/templates/part-template.php:97
+#: includes/templates/part-template.php:81
+#: includes/templates/part-template.php:102
 #, php-format
 msgid "This field can be seen by: %s"
 msgstr ""
 
-#: includes/templates/part-template.php:86
+#: includes/templates/part-template.php:91
 msgid "Who can see this field?"
 msgstr ""
 
-#: includes/templates/part-template.php:91
+#: includes/templates/part-template.php:96
 msgid "Close"
 msgstr ""
 
-#: includes/templates/part-template.php:126
-msgid "❮ Previous step"
-msgstr "❮ Forrige"
+#: public/class-bp-registration-parts-public.php:165
+msgid "Profile Photo"
+msgstr ""
 
-#: includes/templates/part-template.php:130
-msgid "Next step ❯"
-msgstr "Neste ❯"
+#: public/class-bp-registration-parts-public.php:172
+msgid "Add some friends!"
+msgstr "Legg til kontakter"
 
-#: includes/templates/part-template.php:132
+#: public/class-bp-registration-parts-public.php:309
+msgid "Previous step"
+msgstr "Forrige"
+
+#: public/class-bp-registration-parts-public.php:315
 msgid "Save & submit"
-msgstr "Lagre og avslutt registrering"
+msgstr "Ferdig"
 
-#: public/class-bp-registration-parts-public.php:218
-#, php-format
-msgid "Step %s: "
-msgstr "Steg %s: "
+#: public/class-bp-registration-parts-public.php:319
+msgid "Next step"
+msgstr "Neste"
+
+#~ msgid "Step %s: "
+#~ msgstr "Steg %s: "

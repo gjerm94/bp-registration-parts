@@ -38,13 +38,8 @@ if ( bp_has_profile( 'user_id=' . get_current_user_id() . '&fetch_field_data=tru
 
 	while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
 
-	<?php if ( bp_profile_has_multiple_groups() ) : ?>
-		<ul class="button-nav" role="navigation">
+			<?php $this->display_progress_bar($group_ids, $step_num); ?>
 
-			<?php $this->display_field_groups_nav($group_ids, $group_ids[$step_num]['id']); ?>
-
-		</ul>
-	<?php endif ;?>
   	<div id="bprp-profile-group">	
 		<form action="" method="post" id="profile-edit-form" class="standard-form <?php bp_the_profile_group_slug(); ?>">
 			

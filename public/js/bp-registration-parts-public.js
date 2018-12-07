@@ -12,6 +12,11 @@
 		if ( $('#profile-edit-form').length && $('.page-breadcrumbs').length) {
 			$('.page-breadcrumbs').hide();
 		}
+
+		$('#profile-group-edit-submit').click(function(e) {
+			window.onbeforeunload = null;
+		});
+	
 	});
 
 	
@@ -22,5 +27,6 @@
 		} );
 		});	
 		
-
+	
+		
 })( jQuery );
