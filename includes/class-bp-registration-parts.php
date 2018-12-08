@@ -187,6 +187,7 @@ class Bp_Registration_Parts {
 		
 		$this->loader->add_filter( 'the_content', $plugin_public, 'display_part' );
 		$this->loader->add_filter( 'bp_is_conditional_profile_field_active', $plugin_public, 'add_bpcpf_compat' );
+		$this->loader->add_filter( 'body_class', $plugin_public, 'change_setup_page_body_class' );
 		
 	}
 

@@ -37,12 +37,18 @@
     color: unset;
 }
 
+.bprp-page .entry-header,
+.bprp-page .page-breadcrumbs {
+    display: none;
+}
+
+
 /* ==========================================================================
     Profile groups nav
    ========================================================================== */
 
 #bprp-profile-group-nav-wrap #progressbar {
-    margin-bottom: 30px;
+    margin: 50px 0 0 0;
     overflow: hidden;
     counter-reset: step;
     text-align: center;
@@ -51,7 +57,7 @@
 #bprp-profile-group-nav-wrap #progressbar li {
     list-style-type: none;
     text-transform: uppercase;
-    font-size: 10px;
+    font-size: 13px;
     width: 16.6%;
     float: left;
     position: relative;

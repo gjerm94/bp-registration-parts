@@ -118,6 +118,13 @@ class Bp_Registration_Parts_Public {
 				
 				}
 
+				echo '<h2>' . apply_filters('bprp_header_text'
+								, __('Thank you for registering!'
+								, 'bp-registration-parts') ) . '</h2>';
+				
+				echo '<h3>' . apply_filters('bprp_header_sub_text'
+								, __('For a complete profile, go through the steps below'
+								, 'bp-registration-parts' ) ) . '</h3>'; 
 				// Load the right template.
 				if ( $group_ids[$step_num]['id'] == 'avatar_upload' ) {
 					require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/change-avatar.php';	
@@ -351,5 +358,15 @@ class Bp_Registration_Parts_Public {
 			bp_core_redirect( home_url( $bprp->get_parts_slug() ) . '?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id']);
 		}
 	
+	}
+
+	public function change_setup_page_body_class($classes) {
+		$bprp = new Bp_Registration_Parts();
+		
+		if ( $bprp->is_parts_page()) {
+			$classes[] = 'bprp-page';
+		}
+
+		return $classes;
 	}
 }

@@ -8,10 +8,6 @@
 		$("#profile-group-edit-prev").click(function() {
 			$( '#profile-edit-form' ).attr('action', '');
 		});
-		
-		if ( $('#profile-edit-form').length && $('.page-breadcrumbs').length) {
-			$('.page-breadcrumbs').hide();
-		}
 
 		$('#profile-group-edit-submit').click(function(e) {
 			window.onbeforeunload = null;
@@ -24,6 +20,8 @@
 		bp.Avatar.Attachment.on( 'change:url', function( data ) {
 			$( "#profile-group-edit-submit" ).trigger( "click" );	
 		} );
+
+
 		});	
 		
 	
