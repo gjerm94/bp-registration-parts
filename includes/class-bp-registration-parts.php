@@ -309,7 +309,7 @@ class Bp_Registration_Parts {
 	}
 
 	public function is_parts_page() {
-		return home_url( parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) ) === home_url( $this->parts_slug ); 
+		return trim(home_url( parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) ), '/' ) === home_url( $this->parts_slug ); 
 	}
 
 	/**
