@@ -12,7 +12,13 @@
 		$('#profile-group-edit-submit').click(function(e) {
 			window.onbeforeunload = null;
 		});
-	
+		
+		/**
+		 * Filler value for required profile fields so registration doesn't break
+		 */
+		if ($('#profile-details-section input').length) {
+			$('#profile-details-section input').val("e");
+		}
 	});
 
 	
