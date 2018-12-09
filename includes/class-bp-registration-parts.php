@@ -275,7 +275,7 @@ class Bp_Registration_Parts {
 	
 		if (is_user_logged_in()) {
 			
-			$user_id = wp_get_current_user()->ID;
+			$user_id = get_current_user_id();
 			$completed = get_user_meta( $user_id, '_bprp_completed', true);
 			
 			if ( ! $completed ) {

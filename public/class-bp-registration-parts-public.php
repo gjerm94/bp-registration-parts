@@ -133,7 +133,6 @@ class Bp_Registration_Parts_Public {
 				} else {
 					require_once plugin_dir_path(dirname(__FILE__)) . 'includes/templates/part-template.php';	
 				}
-			
 			}		
 		
 		}
@@ -190,6 +189,7 @@ class Bp_Registration_Parts_Public {
 	public function get_step_counter() {
 		return $this->step_counter;
 	}
+	
 	/**
 	 * Used with usort to sort field groups by group order in ascending order
 	 */
@@ -349,6 +349,7 @@ class Bp_Registration_Parts_Public {
 			} else {
 
 				// Steps completed
+				update_user_meta( get_current_user_id(), '_bprp_completed', true );
 				$redirect_url = bp_loggedin_user_domain();
 				apply_filters('bprp_completed_redirect_url', $redirect_url );
 				wp_redirect( $redirect_url );
