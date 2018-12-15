@@ -182,12 +182,16 @@ class Bp_Registration_Parts {
 	
 		$plugin_public = new Bp_Registration_Parts_Public( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		if ( $this->is_parts_page() ) {
+			
+			$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+			$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		
-		$this->loader->add_filter( 'the_content', $plugin_public, 'display_part' );
-		$this->loader->add_filter( 'bp_is_conditional_profile_field_active', $plugin_public, 'add_bpcpf_compat' );
-		$this->loader->add_filter( 'body_class', $plugin_public, 'change_setup_page_body_class' );
+			$this->loader->add_filter( 'the_content', $plugin_public, 'display_part' );
+			$this->loader->add_filter( 'bp_is_conditional_profile_field_active', $plugin_public, 'add_bpcpf_compat' );
+			$this->loader->add_filter( 'body_class', $plugin_public, 'change_setup_page_body_class' );
+		
+		}
 		
 	}
 
