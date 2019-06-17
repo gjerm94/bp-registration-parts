@@ -23,9 +23,9 @@
 
 	
 	$(window).load(function() {
-		bp.Avatar.Attachment.on( 'change:url', function( data ) {
-			$( "#profile-group-edit-submit" ).trigger( "click" );	
-		} );
+		// bp.Avatar.Attachment.on( 'change:url', function( data ) {
+		// 	$( "#profile-group-edit-submit" ).trigger( "click" );	
+		// } );
 
 
 		});	
