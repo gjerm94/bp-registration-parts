@@ -19,6 +19,27 @@
 		if ($('#profile-details-section input').length) {
 			$('#profile-details-section input').val("e");
 		}
+
+		var avatarUploaded = false;
+		$(document).on('click', '.avatar-crop-submit', function () {
+			avatarUploaded = true;
+		});
+
+		/**
+		 * Alert user if they have not saved a profile picture
+		 */
+		if ($('.bp-avatar').length) {
+			$("#profile-edit-form").on("submit", function(){
+				if(!avatarUploaded) {
+					if (confirm('Du har ikke lagret eller lastet opp et profilbilde. Husk å trykke på "Lagre bilde" etter du har lastet opp bildet ditt. Er du sikker på at du vil fortsette?')) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+				return true;
+			});
+		}
 	});
 
 	
