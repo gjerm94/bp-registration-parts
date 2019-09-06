@@ -113,8 +113,8 @@
     Friend suggestions page
    ========================================================================== */
 #bprp-profile-group #members-list li img.avatar {
-    width: 150px !important;
-    height: 150px !important;
+    width: 150px;
+    height: 150px;
     float: none;
     margin: 0;
 }
