@@ -27,7 +27,8 @@
  * @subpackage Bp_Registration_Parts/includes
  * @author     gjerm94 <gjermundbakken94@gmail.com>
  */
-class Bp_Registration_Parts {
+class Bp_Registration_Parts
+{
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -63,7 +64,7 @@ class Bp_Registration_Parts {
 	 * @since    1.0.0
 	 * @access   protected
 	 * @var      string    $pars_page    The page slug.
-	 */	
+	 */
 	protected $parts_slug;
 
 	/**
@@ -75,8 +76,9 @@ class Bp_Registration_Parts {
 	 *
 	 * @since    1.0.0
 	 */
-	public function __construct() {
-		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
+	public function __construct()
+	{
+		if (defined('PLUGIN_NAME_VERSION')) {
 			$this->version = PLUGIN_NAME_VERSION;
 		} else {
 			$this->version = '1.0.0';
@@ -89,7 +91,6 @@ class Bp_Registration_Parts {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 		$this->define_core_hooks();
-
 	}
 
 	/**
@@ -108,34 +109,34 @@ class Bp_Registration_Parts {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function load_dependencies() {
+	private function load_dependencies()
+	{
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-bp-registration-parts-loader.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-bp-registration-parts-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-bp-registration-parts-i18n.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-bp-registration-parts-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-bp-registration-parts-admin.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-bp-registration-parts-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-bp-registration-parts-public.php';
+		require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-bp-registration-parts-public.php';
 
 
 		$this->loader = new Bp_Registration_Parts_Loader();
-
 	}
 
 	/**
@@ -147,14 +148,14 @@ class Bp_Registration_Parts {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function set_locale() {
+	private function set_locale()
+	{
 
 		$plugin_i18n = new Bp_Registration_Parts_i18n();
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
+		$this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
 	}
-	
+
 	/**
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
@@ -162,13 +163,13 @@ class Bp_Registration_Parts {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_admin_hooks() {
+	private function define_admin_hooks()
+	{
 
-		$plugin_admin = new Bp_Registration_Parts_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new Bp_Registration_Parts_Admin($this->get_plugin_name(), $this->get_version());
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
+		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 	}
 
 	/**
@@ -178,21 +179,20 @@ class Bp_Registration_Parts {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_public_hooks() {
-	
-		$plugin_public = new Bp_Registration_Parts_Public( $this->get_plugin_name(), $this->get_version() );
+	private function define_public_hooks()
+	{
 
-		if ( $this->is_parts_page() ) {
-			
-			$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-			$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-		
-			$this->loader->add_filter( 'the_content', $plugin_public, 'display_part' );
-			$this->loader->add_filter( 'bp_is_conditional_profile_field_active', $plugin_public, 'add_bpcpf_compat' );
-			$this->loader->add_filter( 'body_class', $plugin_public, 'change_setup_page_body_class' );
-		
+		$plugin_public = new Bp_Registration_Parts_Public($this->get_plugin_name(), $this->get_version());
+
+		if ($this->is_parts_page()) {
+
+			$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
+			$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+
+			$this->loader->add_filter('the_content', $plugin_public, 'display_part');
+			$this->loader->add_filter('bp_is_conditional_profile_field_active', $plugin_public, 'add_bpcpf_compat');
+			$this->loader->add_filter('body_class', $plugin_public, 'change_setup_page_body_class');
 		}
-		
 	}
 
 	/**
@@ -201,20 +201,21 @@ class Bp_Registration_Parts {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_core_hooks() {
+	private function define_core_hooks()
+	{
 
-		$this->loader->add_filter( 'bp_attachment_avatar_params', $this, 'filter_bp_attachment_avatar_params' ); 
-		$this->loader->add_filter( 'bp_avatar_is_front_edit', $this, 'add_avatar_functionality' );
-		$this->loader->add_action( 'user_register', $this, 'add_bprp_completed_meta' );
-		$this->loader->add_action( 'template_redirect', $this, 'redirect_to_part_page' );
-
+		$this->loader->add_filter('bp_attachment_avatar_params', $this, 'filter_bp_attachment_avatar_params');
+		$this->loader->add_filter('bp_avatar_is_front_edit', $this, 'add_avatar_functionality');
+		$this->loader->add_action('user_register', $this, 'add_bprp_completed_meta');
+		$this->loader->add_action('template_redirect', $this, 'redirect_to_part_page');
 	}
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
 	 * @since    1.0.0
 	 */
-	public function run() {
+	public function run()
+	{
 		$this->loader->run();
 	}
 
@@ -225,7 +226,8 @@ class Bp_Registration_Parts {
 	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
 	 */
-	public function get_plugin_name() {
+	public function get_plugin_name()
+	{
 		return $this->plugin_name;
 	}
 
@@ -235,7 +237,8 @@ class Bp_Registration_Parts {
 	 * @since     1.0.0
 	 * @return    Bp_Registration_Parts_Loader    Orchestrates the hooks of the plugin.
 	 */
-	public function get_loader() {
+	public function get_loader()
+	{
 		return $this->loader;
 	}
 
@@ -245,7 +248,8 @@ class Bp_Registration_Parts {
 	 * @since     1.0.0
 	 * @return    string    The version number of the plugin.
 	 */
-	public function get_version() {
+	public function get_version()
+	{
 		return $this->version;
 	}
 
@@ -255,7 +259,8 @@ class Bp_Registration_Parts {
 	 * @since     1.0.0
 	 * @return    string    The page slug.
 	 */
-	public function get_parts_slug() {
+	public function get_parts_slug()
+	{
 		return $this->parts_slug;
 	}
 
@@ -266,8 +271,9 @@ class Bp_Registration_Parts {
 	 * 
 	 * @since 	1.0.0
 	 */
-	public function add_bprp_completed_meta( $user_id ) {
-		add_user_meta( $user_id, '_bprp_completed', false ); 
+	public function add_bprp_completed_meta($user_id)
+	{
+		add_user_meta($user_id, '_bprp_completed', false);
 	}
 
 	/**
@@ -275,26 +281,23 @@ class Bp_Registration_Parts {
 	 * 
 	 * @since 	1.0.0
 	 */
-	public function redirect_to_part_page( ) {
-	
+	public function redirect_to_part_page()
+	{
+
 		if (is_user_logged_in()) {
-			
+
 			$user_id = get_current_user_id();
-			$completed = get_user_meta( $user_id, '_bprp_completed', true);
-			
-			if ( ! $completed ) {
-				
-				if ( ! $this->is_parts_page() ) {
-					
-					wp_redirect( home_url( $this->parts_slug ) );	
+			$completed = get_user_meta($user_id, '_bprp_completed', true);
+
+			if (!$completed) {
+
+				if (!$this->is_parts_page()) {
+
+					wp_redirect(home_url($this->parts_slug));
 					exit;
-				
 				}
-			
 			}
-		
 		}
-	
 	}
 
 	/**
@@ -302,18 +305,19 @@ class Bp_Registration_Parts {
 	 * 
 	 * @since 	1.0.0
 	 */
-	public function add_avatar_functionality( $retval ) {
-		
-		if ( $this->is_parts_page()) {
+	public function add_avatar_functionality($retval)
+	{
+
+		if ($this->is_parts_page() && $_GET['group_id'] === 'avatar_upload') {
 			$retval = true;
 		}
-	
-		return $retval;
 
+		return $retval;
 	}
 
-	public function is_parts_page() {
-		return trim(home_url( parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) ), '/' ) === home_url( $this->parts_slug ); 
+	public function is_parts_page()
+	{
+		return trim(home_url(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)), '/') === home_url($this->parts_slug);
 	}
 
 	/**
@@ -321,23 +325,21 @@ class Bp_Registration_Parts {
 	 * 
 	 * @since 	1.0.0
 	 */
-	public function filter_bp_attachment_avatar_params( $bp_params ) { 
+	public function filter_bp_attachment_avatar_params($bp_params)
+	{
 
-		if ( $this->is_parts_page() ) {
-			
+		if ($this->is_parts_page()) {
+
 			$bp_params = array(
 				'object'     => 'user',
 				'item_id'    => get_current_user_id(),
 				'nonces'  => array(
-					'set'    => wp_create_nonce( 'bp_avatar_cropstore' ),
-					'remove' => wp_create_nonce( 'bp_delete_avatar_link' ),
+					'set'    => wp_create_nonce('bp_avatar_cropstore'),
+					'remove' => wp_create_nonce('bp_delete_avatar_link'),
 				),
 			);
-			
 		}
-		
-		return $bp_params; 
 
-	} 
-
+		return $bp_params;
+	}
 }
