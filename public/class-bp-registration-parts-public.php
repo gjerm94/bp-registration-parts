@@ -344,7 +344,7 @@ class Bp_Registration_Parts_Public
 				<?php esc_attr_e('Next step', 'bp-registration-parts'); ?>
 				<i class="fas fa-arrow-right"></i>
 			</button>
-		<?php endif;
+<?php endif;
 	}
 
 	/**
@@ -364,7 +364,7 @@ class Bp_Registration_Parts_Public
 
 
 			if ($group_ids[$step_num - 1] !== end($group_ids)) {
-				bp_core_redirect(home_url($bprp->get_parts_slug()) . '?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id']);
+				bp_core_redirect(home_url($bprp->get_parts_slug()) . '/?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id']);
 			} else {
 
 				// Steps completed
@@ -374,7 +374,7 @@ class Bp_Registration_Parts_Public
 				wp_redirect($redirect_url);
 			}
 		} elseif (isset($_POST['profile-group-edit-prev'])) {
-			bp_core_redirect(home_url($bprp->get_parts_slug()) . '?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id']);
+			bp_core_redirect(home_url($bprp->get_parts_slug()) . '/?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id']);
 		}
 	}
 

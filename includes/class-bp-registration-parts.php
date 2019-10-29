@@ -293,7 +293,7 @@ class Bp_Registration_Parts
 
 				if (!$this->is_parts_page()) {
 
-					wp_redirect(home_url($this->parts_slug));
+					wp_redirect(home_url($this->parts_slug) . '/');
 					exit;
 				}
 			}
