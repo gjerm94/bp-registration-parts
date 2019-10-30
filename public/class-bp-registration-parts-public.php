@@ -392,14 +392,14 @@ class Bp_Registration_Parts_Public
 	{
 		$bprp = new Bp_Registration_Parts();
 
-		return home_url($bprp->get_parts_slug()) . '/?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id'];
+		return home_url($bprp->get_parts_slug()) . '?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id'];
 	}
 
 	public function get_form_action_prev($group_ids, $step_num)
 	{
 		$bprp = new Bp_Registration_Parts();
 
-		return home_url($bprp->get_parts_slug()) . '/?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id'];
+		return home_url($bprp->get_parts_slug()) . '?step=' . $step_num . '&group_id=' . $group_ids[$step_num]['id'];
 	}
 
 	public function change_setup_page_body_class($classes)
