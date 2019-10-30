@@ -1,4 +1,3 @@
-
 <?php
 
 /**
@@ -15,131 +14,130 @@
 <?php
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+if (!defined('ABSPATH')) exit;
 
 require_once plugin_dir_path(dirname(__FILE__)) . 'templates/edit.php';
 
-if ( isset( $_POST['profile-group-edit-submit']) ) {
-
-    xprofile_screen_edit_profile();
-  
+if (isset($_POST['profile-group-edit-submit'])) {
+	xprofile_screen_edit_profile();
 }
 
-$this->redirect_after_submit( $group_ids, $step_num );
+$this->redirect_after_submit($group_ids, $step_num);
 
-do_action( 'bp_before_profile_edit_content' ); ?>
+do_action('bp_before_profile_edit_content'); ?>
 
-<div id ="buddypress">
-<div id="bprp-profile-group-nav-wrap">
+<div id="buddypress">
+	<div id="bprp-profile-group-nav-wrap">
 
-<?php
+		<?php
 
-if ( bp_has_profile( 'user_id=' . get_current_user_id() . '&fetch_field_data=true&hide_empty_fields=0&profile_group_id=' . $group_ids[$step_num]['id']  ) ) :
+		if (bp_has_profile('user_id=' . get_current_user_id() . '&fetch_field_data=true&hide_empty_fields=0&profile_group_id=' . $group_ids[$step_num]['id'])) :
 
-	while ( bp_profile_groups() ) : bp_the_profile_group(); ?>
+			while (bp_profile_groups()) : bp_the_profile_group(); ?>
 
-			<?php $this->display_progress_bar($group_ids, $step_num); ?>
+				<?php $this->display_progress_bar($group_ids, $step_num); ?>
 
-  	<div id="bprp-profile-group">	
-		<form action="" method="post" id="profile-edit-form" class="standard-form <?php bp_the_profile_group_slug(); ?>">
-			
-			<?php
-				/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
-				do_action( 'bp_before_profile_field_content' ); ?>
-
-				<h2><?php printf( __( 'Step %s: %s', 'bp-registration-parts' ), $step_num + 1, $group_ids[$step_num]['name']); ?></h2>
-
-				<div class="clear"></div>
-
-				<?php while ( bp_profile_fields() ) : bp_the_profile_field(); ?>
-
-					<div<?php bp_field_css_class( 'editfield' ); ?>>
-						<fieldset>
+				<div id="bprp-profile-group">
+					<form action="" method="post" id="profile-edit-form" class="standard-form <?php bp_the_profile_group_slug(); ?>">
 
 						<?php
-						$field_type = bp_xprofile_create_field_type( bp_get_the_profile_field_type() );
-						
-						$raw_properties = array(
-							'user_id' => get_current_user_id()
-						);
-						$dv = Devb_Conditional_XProfile_Field_Helper::get_instance();
-						//var_dump($dv->to_js_objects());	
+								/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
+								do_action('bp_before_profile_field_content'); ?>
 
-						$field_type->edit_field_html($raw_properties);
-						/**
-						 * Fires before the display of visibility options for the field.
-						 *
-						 * @since 1.7.0
-						 */
-						do_action( 'bp_custom_profile_edit_fields_pre_visibility' );
-						?>
+						<h2><?php printf(__('Step %s: %s', 'bp-registration-parts'), $step_num + 1, $group_ids[$step_num]['name']); ?></h2>
 
-						<?php if ( bp_current_user_can( 'bp_xprofile_change_field_visibility' ) ) : ?>
-							<p class="field-visibility-settings-toggle" id="field-visibility-settings-toggle-<?php bp_the_profile_field_id() ?>"><span id="<?php bp_the_profile_field_input_name(); ?>-2">
-								<?php
-								printf(
-									__( 'This field can be seen by: %s', 'buddypress' ),
-									'<span class="current-visibility-level">' . bp_get_the_profile_field_visibility_level_label() . '</span>'
-								);
-								?>
-								</span>
-								<button type="button" class="visibility-toggle-link" aria-describedby="<?php bp_the_profile_field_input_name(); ?>-2" aria-expanded="false"><?php _ex( 'Change', 'Change profile field visibility level', 'buddypress' ); ?></button>
-							</p>
+						<div class="clear"></div>
 
-							<div class="field-visibility-settings" id="field-visibility-settings-<?php bp_the_profile_field_id() ?>">
+						<?php while (bp_profile_fields()) : bp_the_profile_field(); ?>
+
+							<div<?php bp_field_css_class('editfield'); ?>>
 								<fieldset>
-									<legend><?php _e( 'Who can see this field?', 'buddypress' ) ?></legend>
 
-									<?php bp_profile_visibility_radio_buttons() ?>
+									<?php
+												$field_type = bp_xprofile_create_field_type(bp_get_the_profile_field_type());
+
+												$raw_properties = array(
+													'user_id' => get_current_user_id()
+												);
+												$dv = Devb_Conditional_XProfile_Field_Helper::get_instance();
+												//var_dump($dv->to_js_objects());	
+
+												$field_type->edit_field_html($raw_properties);
+												/**
+												 * Fires before the display of visibility options for the field.
+												 *
+												 * @since 1.7.0
+												 */
+												do_action('bp_custom_profile_edit_fields_pre_visibility');
+												?>
+
+									<?php if (bp_current_user_can('bp_xprofile_change_field_visibility')) : ?>
+										<p class="field-visibility-settings-toggle" id="field-visibility-settings-toggle-<?php bp_the_profile_field_id() ?>"><span id="<?php bp_the_profile_field_input_name(); ?>-2">
+												<?php
+																printf(
+																	__('This field can be seen by: %s', 'buddypress'),
+																	'<span class="current-visibility-level">' . bp_get_the_profile_field_visibility_level_label() . '</span>'
+																);
+																?>
+											</span>
+											<button type="button" class="visibility-toggle-link" aria-describedby="<?php bp_the_profile_field_input_name(); ?>-2" aria-expanded="false"><?php _ex('Change', 'Change profile field visibility level', 'buddypress'); ?></button>
+										</p>
+
+										<div class="field-visibility-settings" id="field-visibility-settings-<?php bp_the_profile_field_id() ?>">
+											<fieldset>
+												<legend><?php _e('Who can see this field?', 'buddypress') ?></legend>
+
+												<?php bp_profile_visibility_radio_buttons() ?>
+
+											</fieldset>
+											<button type="button" class="field-visibility-settings-close"><?php _e('Close', 'buddypress') ?></button>
+										</div>
+									<?php else : ?>
+										<div class="field-visibility-settings-notoggle" id="field-visibility-settings-toggle-<?php bp_the_profile_field_id() ?>">
+											<?php
+															printf(
+																__('This field can be seen by: %s', 'buddypress'),
+																'<span class="current-visibility-level">' . bp_get_the_profile_field_visibility_level_label() . '</span>'
+															);
+															?>
+										</div>
+									<?php endif ?>
+
+									<?php
+
+												/**
+												 * Fires after the visibility options for a field.
+												 *
+												 * @since 1.1.0
+												 */
+												do_action('bp_custom_profile_edit_fields'); ?>
 
 								</fieldset>
-								<button type="button" class="field-visibility-settings-close"><?php _e( 'Close', 'buddypress' ) ?></button>
-							</div>
-						<?php else : ?>
-							<div class="field-visibility-settings-notoggle" id="field-visibility-settings-toggle-<?php bp_the_profile_field_id() ?>">
-								<?php
-								printf(
-									__( 'This field can be seen by: %s', 'buddypress' ),
-									'<span class="current-visibility-level">' . bp_get_the_profile_field_visibility_level_label() . '</span>'
-								);
-								?>
-							</div>
-						<?php endif ?>
+				</div>
 
-						<?php
-
-						/**
-						 * Fires after the visibility options for a field.
-						 *
-						 * @since 1.1.0
-						 */
-						do_action( 'bp_custom_profile_edit_fields' ); ?>
-
-						</fieldset>
-					</div>
-
-				<?php endwhile; ?>
+			<?php endwhile; ?>
 
 			<?php
 
-			/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
-			do_action( 'bp_after_profile_field_content' ); ?>
+					/** This action is documented in bp-templates/bp-legacy/buddypress/members/single/profile/profile-wp.php */
+					do_action('bp_after_profile_field_content'); ?>
 
 			<div class="submit">
 
 
-			<?php $this->display_prev_next_buttons($group_ids, $step_num); ?>			
-				
-			
+				<?php $this->display_prev_next_buttons($group_ids, $step_num); ?>
+
+
 			</div>
 
 			<input type="hidden" name="field_ids" id="field_ids" value="<?php bp_the_profile_field_ids(); ?>" />
 			<input type="hidden" name="current_group_id" id="current_group_id" value="<?php echo $group_ids[$step_num]['id']; ?>" />
-			<?php wp_nonce_field( 'bp_xprofile_edit' ); ?>
+			<?php wp_nonce_field('bp_xprofile_edit'); ?>
 
-		</form>
-	</div> <!-- #bprp-profile-group -->		
-<?php endwhile; endif; ?>
+			</form>
+	</div> <!-- #bprp-profile-group -->
+<?php endwhile;
+endif; ?>
 </div> <!-- #bprp-profile-group-nav-wrap -->
 </div> <!-- #buddypress -->
 <?php
@@ -149,4 +147,4 @@ if ( bp_has_profile( 'user_id=' . get_current_user_id() . '&fetch_field_data=tru
  *
  * @since 1.1.0
  */
-do_action( 'bp_after_profile_edit_content' );
+do_action('bp_after_profile_edit_content');
